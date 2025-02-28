@@ -1,0 +1,15 @@
+.headerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    height: 50px;
+    width: 50px;
+}
+
+.title {
+    font-size: 40px;
+}
