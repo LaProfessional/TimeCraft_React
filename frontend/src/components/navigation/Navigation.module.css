@@ -4,6 +4,8 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
+
+    margin-bottom: 30px;
 }
 
 .title {
@@ -19,6 +21,10 @@
     animation: .7s ease-in-out slide-in-left forwards;
 }
 
+.rightNavContainer {
+    animation: 1s ease-in-out slide-in-left forwards;
+}
+
 @keyframes slide-in-left {
     0% {
         transform: translateX(-100%);
@@ -30,110 +36,9 @@
     }
 }
 
-.rightNavContainer {
-    animation: 1s ease-in-out slide-in-left forwards;
-}
-
-.btnExit,
-.btnDelete {
-    background: #ff6b6b;
-    border: 2px solid #b04747;
-    color: #ffffff;
-    outline: 0 solid hsla(0, 70%, 60%, 0.6);
-}
-
-.btnExit:hover,
-.btnDelete:hover {
-    background: #e05454;
-    outline: solid 4px hsla(0, 70%, 60%, 0.6);
-}
-
-.quickSearchContainer {
-    position: relative;
-}
-
-.quickSearchContainer::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 5px;
-    background: url('../../images/search.svg') no-repeat center;
-    width: 18px;
-    height: 18px;
-}
-
-.quickSearch {
-    height: 40px;
-    border: 2px solid #5e9c8b;
-    border-radius: 12px;
-    background-color: #f2f8f4;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-    font-size: 16px;
-    color: #2b5b4e;
-
-    transition: all 0.3s ease;
-
-    padding: 5px 5px 5px 25px;
-}
-
-.quickSearch:focus {
-    outline: none;
-    border-color: #8cd69b;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.quickSearch::placeholder {
-    color: #7a8e7d;
-    opacity: 0.7;
-}
-
-.quickSearch:hover {
-    border-color: #77b6ab;
-    background-color: #f2fdf9;
-}
-
-.sortingContainer {
+.sortOptionsContainer {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-}
-
-.sortingContainer label {
-    font-size: 16px;
-    color: #2b5b4e;
-    font-weight: 500;
-}
-
-.sortOptions {
-    border: 2px solid #5e9c8b;
-    border-radius: 12px;
-    background-color: #f2f8f4;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-    font-size: 16px;
-    color: #2b5b4e;
-
-    transition: all 0.3s ease;
-
-    padding: 5px;
-
-    cursor: pointer;
-}
-
-.sortOptions:focus {
-    outline: none;
-    border-color: #8cd69b;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.sortOptions:hover {
-    border-color: #77b6ab;
-    background-color: #f2fdf9;
-}
-
-.sortOptions option {
-    background-color: #f2f8f4;
-    color: #2b5b4e;
 }

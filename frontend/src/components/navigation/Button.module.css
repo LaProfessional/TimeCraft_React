@@ -9,6 +9,7 @@
     font-size: 16px;
     text-transform: uppercase;
 
+    outline: solid 0 hsla(154, 50%, 60%, 0.6);
     transition: all 0.3s ease;
 
     padding: 12px;
@@ -24,4 +25,18 @@
 .button:active {
     opacity: 0.88;
     transform: scale(0.96);
+}
+
+.button.danger {
+    background: #ff6b6b;
+    border: 2px solid #b04747;
+
+    color: #ffffff;
+
+    outline: 0 solid hsla(0, 70%, 60%, 0.6);
+}
+
+.button.danger:hover {
+    background: #e05454;
+    outline: solid 4px hsla(0, 70%, 60%, 0.6);
 }

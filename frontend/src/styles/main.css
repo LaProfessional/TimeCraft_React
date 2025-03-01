@@ -21,3 +21,7 @@ button {
     background-color: transparent;
     border: none;
 }
+
+input {
+    margin: 0;
+}
