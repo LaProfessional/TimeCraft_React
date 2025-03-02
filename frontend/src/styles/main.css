@@ -20,8 +20,10 @@ h5, h6 {
 button {
     background-color: transparent;
     border: none;
+    padding: 0;
 }
 
 input {
     margin: 0;
+    padding: 0;
 }
