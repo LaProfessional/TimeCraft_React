@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./ModalContent.module.css";
-import { logDOM } from "@testing-library/dom";
 
-const ModalContent = () => {
+const ModalContent = ({ isClickBtnSave, setIsClickBtnSave }) => {
 	const [ startDate, setStartDate ] = useState('');
 	const [ startTime, setStartTime ] = useState('');
 	const [ endDate, setEndDate ] = useState('');
+	const [ endTime, setEndTime ] = useState('');
+	const [ title, setTitle ] = useState('');
+	const [ description, setDescription ] = useState('');
+
+	// const [task, setTask] = useState({
+	//
+	// });
+	const [ task, setTask ] = useState(null);
+
+	useEffect(() => {
+		if (!task) return;
+		console.log(task);
+	}, [ task ]);
 
 	useEffect(() => {
 		const currentDate = new Date();
@@ -17,6 +29,23 @@ const ModalContent = () => {
 		const time = `${ hours }:${ minutes }`;
 		setStartTime(time);
 	}, []);
+
+	useEffect(() => {
+		if (!isClickBtnSave) return;
+
+		const startDatetime = new Date(`${ startDate } ${ startTime }`).toISOString();
+		const endDatetime = endDate && endTime ? new Date(`${ endDate } ${ endTime }`).toISOString() : null;
+
+		setTask(prev => ({
+			...prev,
+			title,
+			description,
+			startDatetime,
+			endDatetime,
+		}));
+
+		setIsClickBtnSave(false);
+	}, [ isClickBtnSave ]);
 
 	const handleChangeDate = (inputId, e) => {
 		const currentYear = parseInt(e.target.value.slice(0, 4));
@@ -42,24 +71,36 @@ const ModalContent = () => {
 	return (
 		<section className={ styles.details }>
 			<div className={ styles.inputGroup }>
-				<label className={ styles.blockTitle } htmlFor="taskName">Название задачи:</label>
-				<input className={ styles.input } type="text" placeholder="Задача" id="taskName"/>
+				<label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
+				<input
+					className={ styles.input }
+					type="text" placeholder="Задача"
+					id="title"
+					value={ title }
+					onChange={ e => setTitle(e.target.value) }
+				/>
 			</div>
 
 			<div className={ styles.inputGroup }>
 				<label className={ styles.blockTitle } htmlFor="description">Описание:</label>
-				<textarea className={ styles.description } placeholder="Описание" id="description"/>
+				<textarea
+					className={ styles.description }
+					placeholder="Описание"
+					id="description"
+					value={ description }
+					onChange={ e => setDescription(e.target.value) }
+				/>
 			</div>
 
 			<div className={ styles.inputGroup }>
-				<label className={ styles.blockTitle } htmlFor="startDatetime">Дата начала:</label>
+				<label className={ styles.blockTitle } htmlFor="startDate">Дата начала:</label>
 				<div className={ styles.dateGroup }>
 					<input
 						className={ styles.inputDatetime }
 						type="date"
 						min="2000-01-01"
 						max="2100-01-01"
-						id="startDatetime"
+						id="startDate"
 						value={ startDate }
 						onChange={ e => setStartDate(e.target.value) }
 						onBlur={ e => handleChangeDate('startDate', e) }
@@ -67,6 +108,7 @@ const ModalContent = () => {
 					<input
 						className={ styles.inputDatetime }
 						type="time"
+						id="startTime"
 						value={ startTime }
 						onChange={ e => setStartDate(e.target.value) }
 					/>
@@ -88,6 +130,8 @@ const ModalContent = () => {
 					<input
 						className={ styles.inputDatetime }
 						type="time"
+						value={ endTime }
+						onChange={ e => setEndTime(e.target.value) }
 					/>
 				</div>
 			</div>

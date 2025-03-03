@@ -5,10 +5,12 @@ import TasksSortOptions from "./TasksSortOptions";
 
 import styles from './Navigation.module.css';
 import Modal from "../modalWindows/Modal";
+import ModalContent from "../modalWindows/ModalContent";
 
 const Navigation = () => {
 
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
+	const [ isClickBtnSave, setIsClickBtnSave ] = useState(false);
 
 	const openModalWindow = () => setIsModalOpen(true);
 
@@ -17,17 +19,24 @@ const Navigation = () => {
 			<Modal
 				isOpen={ isModalOpen }
 				setIsOpen={ setIsModalOpen }
-			></Modal>
+				title={ "Название задачи" }
+				isClickBtnSave={ isClickBtnSave }
+				setIsClickBtnSave={ setIsClickBtnSave }
+			><ModalContent
+				isClickBtnSave={ isClickBtnSave }
+				setIsClickBtnSave={ setIsClickBtnSave }
+			/>
+			</Modal>
 
 			<nav className={ styles.navContainer }>
 				<h2 className={ styles.title }>Задачи N</h2>
 				<div className={ styles.leftNavContainer }>
-					<Button type='primary'
-						onClick={() => {
+					<Button
+						type='primary'
+						onClick={ () => {
 							openModalWindow();
 						} }
-					>
-					Создать задачу</Button>
+					>Создать задачу</Button>
 
 					<Button type='primary'>Редактировать</Button>
 					<Button type='danger'>Удалить</Button>

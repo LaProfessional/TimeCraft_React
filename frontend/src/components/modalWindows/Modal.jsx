@@ -1,43 +1,48 @@
-import React from 'react';
-import ModalContent from "./ModalContent";
+import React, { useEffect, useState } from 'react';
 
 import styles from './Modal.module.css';
 
-const Modal = ({ isOpen, setIsOpen }) => {
+const Modal = ({ isOpen, setIsOpen, title, children, setIsClickBtnSave }) => {
 
 	const closeModalWindow = e => {
 		if (e.target === e.currentTarget) setIsOpen(false);
 	}
 
 	return (
-		<div className={ `${ styles.overlay } ${ isOpen ? styles.active : '' }` }
-			 onClick={ e => closeModalWindow(e) }
+		<div
+			className={ `${ styles.overlay } ${ isOpen ? styles.active : '' }` }
+			onClick={ e => closeModalWindow(e) }
 		>
 			<div className={ `${ styles.container } ${ isOpen ? styles.slidingModalWindow : '' }` }>
 				<div className={ styles.headerContainer }>
-					<h2 className={ styles.title }>Новая задача</h2>
+					<h2 className={ styles.title }>{ title }</h2>
 
-					<button className={ styles.btnClose }
+					<button
+						className={ styles.btnClose }
 						onClick={ e => {
 							e.stopPropagation();
-							closeModalWindow(e)
+							closeModalWindow(e);
 						} }
 					>
 					</button>
 				</div>
-
-				<ModalContent/>
-
+				{ children }
 				<footer className={ styles.footer }>
-					<button className={ `${ styles.btn } ${ styles.btnSave }` }>Сохранить</button>
+					<button
+						className={ `${ styles.btn } ${ styles.btnSave }` }
+						onClick={ () => setIsClickBtnSave(true) }
 
-					<button className={ `${ styles.btn } ${ styles.btnCancel }` }
+					>Сохранить
+					</button>
+
+					<button
+						className={ `${ styles.btn } ${ styles.btnCancel }` }
 						onClick={ e => {
 							e.stopPropagation();
-							closeModalWindow(e)
+							closeModalWindow(e);
 						} }
-					>
-					Отмена</button>
+					>Отмена
+					</button>
 				</footer>
 			</div>
 		</div>
