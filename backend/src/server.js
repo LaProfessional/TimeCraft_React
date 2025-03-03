@@ -1,4 +1,4 @@
-import express, { response } from 'express';
+import express from 'express';
 import path from 'path';
 // import pkg from 'pg';
 // import cookieParser from 'cookie-parser'

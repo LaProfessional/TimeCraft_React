@@ -1,0 +1,69 @@
+.details {
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 400px;
+
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: #5e9c8b #f2f8f4;
+
+    padding: 10px 10px 0 10px;
+}
+
+.inputGroup {
+    margin-bottom: 15px;
+}
+
+.blockTitle {
+    display: block;
+
+    font-size: 14px;
+    font-weight: 600;
+    color: #2b5b4e;
+
+    margin-bottom: 5px;
+}
+
+.input {
+    width: 100%;
+    height: 35px;
+}
+
+.description {
+    width: 100%;
+    height: 50px;
+    resize: vertical;
+}
+
+.dateGroup {
+    display: flex;
+    gap: 5px;
+}
+
+.inputDatetime {
+    width: clamp(100px, 100%, 140px);
+    height: 35px;
+}
+
+.input,
+.description,
+.inputDatetime {
+    border: 1px solid #5e9c8b;
+    border-radius: 6px;
+    background-color: #f2fdf9;
+
+    font-size: 14px;
+    color: #2b5b4e;
+
+    transition: border 0.3s ease;
+
+    padding: 5px;
+}
+
+.input:focus,
+.description:focus,
+.inputDatetime:focus {
+    border-color: #8cd69b;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

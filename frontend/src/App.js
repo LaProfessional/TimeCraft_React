@@ -3,6 +3,7 @@ import Navigation from "./components/navigation/Navigation";
 import Table from "./components/table/Table";
 
 import React from "react";
+import './styles/main.css';
 
 const App = () => {
 	return (
