@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import styles from "./ModalContent.module.css";
+import styles from "./TaskCreationForm.module.css";
 
-const ModalContent = ({ isClickBtnSave, setIsClickBtnSave }) => {
+const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 	const [ startDate, setStartDate ] = useState('');
 	const [ startTime, setStartTime ] = useState('');
 	const [ endDate, setEndDate ] = useState('');
@@ -9,14 +9,21 @@ const ModalContent = ({ isClickBtnSave, setIsClickBtnSave }) => {
 	const [ title, setTitle ] = useState('');
 	const [ description, setDescription ] = useState('');
 
-	// const [task, setTask] = useState({
-	//
-	// });
 	const [ task, setTask ] = useState(null);
 
 	useEffect(() => {
 		if (!task) return;
-		console.log(task);
+
+		fetch('http://localhost:5000/tasks', {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify({ task }),
+
+		}).then(response => {
+
+		});
 	}, [ task ]);
 
 	useEffect(() => {
@@ -102,15 +109,15 @@ const ModalContent = ({ isClickBtnSave, setIsClickBtnSave }) => {
 						max="2100-01-01"
 						id="startDate"
 						value={ startDate }
-						onChange={ e => setStartDate(e.target.value) }
 						onBlur={ e => handleChangeDate('startDate', e) }
+						onChange={ e => setStartDate(e.target.value) }
 					/>
 					<input
 						className={ styles.inputDatetime }
 						type="time"
 						id="startTime"
 						value={ startTime }
-						onChange={ e => setStartDate(e.target.value) }
+						onChange={ e => setStartTime(e.target.value) }
 					/>
 				</div>
 			</div>
@@ -139,4 +146,4 @@ const ModalContent = ({ isClickBtnSave, setIsClickBtnSave }) => {
 	);
 };
 
-export default ModalContent;
+export default TaskCreationForm;

@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import pkg from 'pg';
+import cors from 'cors';
 
 const { Pool } = pkg;
 
@@ -16,7 +17,11 @@ pool.connect().then(() => console.log('Connected to PostgreSQL and table "tasks_
 const PORT = 5000;
 const app = express();
 
+app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(express.json());
+
 app.post('/tasks', async (req, response) => {
+	const { task } = req.body.task;
 	console.log(req.body.task);
 });
 

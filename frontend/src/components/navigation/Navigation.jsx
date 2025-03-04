@@ -4,29 +4,30 @@ import QuickSearch from "./QuickSearch";
 import TasksSortOptions from "./TasksSortOptions";
 
 import styles from './Navigation.module.css';
-import Modal from "../modalWindows/Modal";
-import ModalContent from "../modalWindows/ModalContent";
+import ModalWindow from "../modalWindows/ModalWindow";
+import TaskCreationForm from "../modalWindows/TaskCreationForm";
 
 const Navigation = () => {
 
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
+
 	const [ isClickBtnSave, setIsClickBtnSave ] = useState(false);
 
 	const openModalWindow = () => setIsModalOpen(true);
 
 	return (
 		<>
-			<Modal
+			<ModalWindow
 				isOpen={ isModalOpen }
 				setIsOpen={ setIsModalOpen }
 				title={ "Название задачи" }
 				isClickBtnSave={ isClickBtnSave }
 				setIsClickBtnSave={ setIsClickBtnSave }
-			><ModalContent
+			><TaskCreationForm
 				isClickBtnSave={ isClickBtnSave }
 				setIsClickBtnSave={ setIsClickBtnSave }
 			/>
-			</Modal>
+			</ModalWindow>
 
 			<nav className={ styles.navContainer }>
 				<h2 className={ styles.title }>Задачи N</h2>

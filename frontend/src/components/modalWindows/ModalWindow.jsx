@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import styles from './Modal.module.css';
+import styles from './ModalWindow.module.css';
 
-const Modal = ({ isOpen, setIsOpen, title, children, setIsClickBtnSave }) => {
+const ModalWindow = ({ isOpen, setIsOpen, title, children, setIsClickBtnSave }) => {
 
 	const closeModalWindow = e => {
 		if (e.target === e.currentTarget) setIsOpen(false);
@@ -49,4 +49,4 @@ const Modal = ({ isOpen, setIsOpen, title, children, setIsClickBtnSave }) => {
 	);
 };
 
-export default Modal;
+export default ModalWindow;
