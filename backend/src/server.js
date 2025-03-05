@@ -1,5 +1,4 @@
 import express from 'express';
-import path from 'path';
 import pkg from 'pg';
 import cors from 'cors';
 
@@ -20,9 +19,78 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
-app.post('/tasks', async (req, response) => {
-	const { task } = req.body.task;
-	console.log(req.body.task);
+app.get('/tasks', async (req, response) => {
+	const getTasks = `
+		SELECT 
+			id,
+			creation_datetime,
+			title,
+			description,
+			start_datetime,
+			end_datetime
+        FROM tasks
+	;`;
+
+	const getTasksRes = await pool.query(getTasks);
+	const tasks = getTasksRes.rows;
+
+	const res = tasks.map(task => convertToCamelCase(task));
+	response.status(200).json(res);
 });
+
+app.post('/tasks', async (req, response) => {
+	const {
+		title,
+		description,
+		startDatetime,
+		endDatetime,
+	} = req.body.newTask;
+	const creationDatetime = new Date().toISOString();
+
+	const createTask = `
+		INSERT INTO tasks (
+			creation_datetime,
+		    title,
+		    description,
+		    start_datetime,
+		    end_datetime
+		)
+		VALUES (
+        	$1,
+        	$2,
+        	$3,
+        	$4,
+        	$5     
+		) RETURNING 
+		id,
+		creation_datetime,
+		title,
+		description,
+		start_datetime,
+		end_datetime
+	;`;
+
+	const creationTaskRes = await pool.query(createTask, [
+		creationDatetime,
+		title,
+		description,
+		startDatetime,
+		endDatetime
+	]);
+
+	const task = creationTaskRes.rows;
+	const res = task.map(task => convertToCamelCase(task));
+
+	response.status(200).json(res[0]);
+});
+
+const convertToCamelCase = dataObject => {
+	const transformedObject = {};
+	for (let originalKey in dataObject) {
+		const camelCaseKey = originalKey.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+		transformedObject[camelCaseKey] = dataObject[originalKey];
+	}
+	return transformedObject;
+};
 
 app.listen(PORT, () => console.log(`SERVER STARTED ON PORT ${ PORT }`));

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { TaskContext } from "../table/TaskProvider";
+
 import styles from "./TaskCreationForm.module.css";
 
 const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
@@ -9,22 +11,23 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 	const [ title, setTitle ] = useState('');
 	const [ description, setDescription ] = useState('');
 
-	const [ task, setTask ] = useState(null);
+	const [ newTask, setNewTask ] = useState(null);
+
+	const { setTasks } = useContext(TaskContext)
 
 	useEffect(() => {
-		if (!task) return;
+		if (!newTask) return;
 
 		fetch('http://localhost:5000/tasks', {
-			method: 'POST',
-			headers: {
+			method: 'POST', headers: {
 				'Content-type': 'application/json',
-			},
-			body: JSON.stringify({ task }),
+			}, body: JSON.stringify({ newTask }),
 
 		}).then(response => {
+			return response.json();
+		}).then(task => setTasks(prev => [...prev, task]));
 
-		});
-	}, [ task ]);
+	}, [ newTask ]);
 
 	useEffect(() => {
 		const currentDate = new Date();
@@ -43,12 +46,8 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 		const startDatetime = new Date(`${ startDate } ${ startTime }`).toISOString();
 		const endDatetime = endDate && endTime ? new Date(`${ endDate } ${ endTime }`).toISOString() : null;
 
-		setTask(prev => ({
-			...prev,
-			title,
-			description,
-			startDatetime,
-			endDatetime,
+		setNewTask(prev => ({
+			...prev, title, description, startDatetime, endDatetime,
 		}));
 
 		setIsClickBtnSave(false);
@@ -75,8 +74,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 		}
 	};
 
-	return (
-		<section className={ styles.details }>
+	return (<section className={ styles.details }>
 			<div className={ styles.inputGroup }>
 				<label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
 				<input
@@ -142,8 +140,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 					/>
 				</div>
 			</div>
-		</section>
-	);
+		</section>);
 };
 
 export default TaskCreationForm;
