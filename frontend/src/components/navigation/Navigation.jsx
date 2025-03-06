@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from './Button';
 import QuickSearch from "./QuickSearch";
 import TasksSortOptions from "./TasksSortOptions";
