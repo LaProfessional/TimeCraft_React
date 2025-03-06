@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { TaskContext } from "../table/TaskProvider";
+import { TaskContext } from "../providers/TaskProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
@@ -13,7 +13,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 
 	const [ newTask, setNewTask ] = useState(null);
 
-	const { setTasks } = useContext(TaskContext)
+	const { setTaskList } = useContext(TaskContext);
 
 	useEffect(() => {
 		if (!newTask) return;
@@ -25,7 +25,10 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 
 		}).then(response => {
 			return response.json();
-		}).then(task => setTasks(prev => [...prev, task]));
+		}).then(task => {
+			setTaskList(prev => [ ...prev, task ]);
+			setIsClickBtnSave(false);
+		});
 
 	}, [ newTask ]);
 
@@ -74,7 +77,8 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 		}
 	};
 
-	return (<section className={ styles.details }>
+	return (
+		<section className={ styles.details }>
 			<div className={ styles.inputGroup }>
 				<label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
 				<input
@@ -140,7 +144,8 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 					/>
 				</div>
 			</div>
-		</section>);
+		</section>
+	);
 };
 
 export default TaskCreationForm;

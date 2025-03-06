@@ -30,7 +30,11 @@ const ModalWindow = ({ isOpen, setIsOpen, title, children, setIsClickBtnSave }) 
 				<footer className={ styles.footer }>
 					<button
 						className={ `${ styles.btn } ${ styles.btnSave }` }
-						onClick={ () => setIsClickBtnSave(true) }
+						onClick={ e => {
+							setIsClickBtnSave(true)
+							e.stopPropagation();
+							closeModalWindow(e);
+						} }
 
 					>Сохранить
 					</button>

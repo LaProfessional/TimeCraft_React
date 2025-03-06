@@ -40,3 +40,21 @@
     background: #e05454;
     outline: solid 4px hsla(0, 70%, 60%, 0.6);
 }
+
+.button:disabled {
+    background: #808080;
+    color: #000000;
+    border: 2px solid #808080;
+    cursor: default;
+}
+
+.button:disabled:hover {
+    background: #808080;
+    outline: none;
+}
+
+.button:disabled:active {
+    outline: none;
+    transform: none;
+    opacity: 1;
+}
