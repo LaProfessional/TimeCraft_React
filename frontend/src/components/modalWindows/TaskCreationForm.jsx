@@ -1,60 +1,110 @@
 import React, { useState, useEffect, useContext } from 'react';
+
 import { TaskContext } from "../providers/TaskProvider";
+import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
+import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
-const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
-	const [ startDate, setStartDate ] = useState('');
-	const [ startTime, setStartTime ] = useState('');
-	const [ endDate, setEndDate ] = useState('');
-	const [ endTime, setEndTime ] = useState('');
-	const [ title, setTitle ] = useState('');
-	const [ description, setDescription ] = useState('');
+const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen }) => {
+	const [ taskData, setTaskData ] = useState({
+		title: '',
+		description: '',
+		startDate: '',
+		startTime: '',
+		endDate: '',
+		endTime: '',
+	});
 
-	const [ newTask, setNewTask ] = useState(null);
+	const { taskList, setTaskList } = useContext(TaskContext);
+	const { currentTaskId, setCurrentTaskId } = useContext(CurrentTaskIdContext);
+	const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
 
-	const { setTaskList } = useContext(TaskContext);
-
-	useEffect(() => {
-		if (!newTask) return;
-
+	const createTask = newTask => {
 		fetch('http://localhost:5000/tasks', {
-			method: 'POST', headers: {
+			method: 'POST',
+			headers: {
 				'Content-type': 'application/json',
-			}, body: JSON.stringify({ newTask }),
-
+			},
+			body: JSON.stringify({ newTask }),
 		}).then(response => {
 			return response.json();
+
 		}).then(task => {
 			setTaskList(prev => [ ...prev, task ]);
 			setIsClickBtnSave(false);
+			resetForm();
 		});
+	};
 
-	}, [ newTask ]);
+	const resetForm = () => {
+		setTaskData(prev => ({
+			...prev,
+			title: '',
+			description: '',
+			endDate: '',
+			endTime: '',
+		}));
+		setDefaultStartDatetime();
+	};
 
 	useEffect(() => {
+		if (!isClickBtnSave) return;
+		const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
+		const endDatetime = taskData.endDate && taskData.endTime
+			? new Date(`${ taskData.endDate } ${ taskData.endTime }`).toISOString()
+			: null;
+
+		const newTask = {
+			title: taskData.title,
+			description: taskData.description,
+			startDatetime,
+			endDatetime,
+		};
+
+		createTask(newTask);
+	}, [ isClickBtnSave ]);
+
+	const setDefaultStartDatetime = () => {
 		const currentDate = new Date();
-		setStartDate(currentDate.toISOString().slice(0, 10));
+		const defaultDate = currentDate.toISOString().slice(0, 10);
 
 		const now = new Date();
 		const hours = now.getHours().toString().padStart(2, '0');
 		const minutes = now.getMinutes().toString().padStart(2, '0');
-		const time = `${ hours }:${ minutes }`;
-		setStartTime(time);
-	}, []);
+		const defaultTime = `${ hours }:${ minutes }`;
+
+		setTaskData(prev => ({
+			...prev,
+			startDate: defaultDate,
+			startTime: defaultTime,
+		}));
+	};
+
+	useEffect(() => setDefaultStartDatetime(), []);
 
 	useEffect(() => {
-		if (!isClickBtnSave) return;
+		if (!currentTaskId) return;
 
-		const startDatetime = new Date(`${ startDate } ${ startTime }`).toISOString();
-		const endDatetime = endDate && endTime ? new Date(`${ endDate } ${ endTime }`).toISOString() : null;
+		const task = currentTaskId[0];
+		const {
+			title,
+			description,
+			startDatetime,
+			endDatetime,
+		} = task;
 
-		setNewTask(prev => ({
-			...prev, title, description, startDatetime, endDatetime,
-		}));
+		setIsModalOpen(true);
 
-		setIsClickBtnSave(false);
-	}, [ isClickBtnSave ]);
+		// setTitle(title);
+		// setDescription(description);
+		//
+		// setStartDate(startDatetime.split('T')[0]);
+		// setStartTime(new Date(startDate).toTimeString().slice(0, 8));
+		//
+		// setEndDate(endDatetime.split('T')[0]);
+		// setEndTime(new Date(endDatetime).toTimeString().slice(0, 8));
+	}, [ currentTaskId ]);
 
 	const handleChangeDate = (inputId, e) => {
 		const currentYear = parseInt(e.target.value.slice(0, 4));
@@ -63,30 +113,45 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 			case 'startDate':
 				if (2100 < currentYear || 2000 > currentYear || !e.target.value) {
 					const defaultDate = new Date();
-					setStartDate(defaultDate.toISOString().slice(0, 10));
+
+					setTaskData(prev => ({
+						...prev,
+						startDate: defaultDate.toISOString().slice(0, 10),
+					}));
 				}
 				break;
 			case 'endDate':
-				const minYear = parseInt(startDate.slice(0, 4));
+				const minYear = parseInt(taskData.startDate.slice(0, 4));
 
 				if (2100 < currentYear || minYear > currentYear) {
-					setEndDate(startDate);
+					setTaskData(prev => ({
+						...prev,
+						endDate: taskData.startDate,
+					}));
 				}
 				break;
 			default:
 		}
 	};
 
+	const handleChangeInput = e => {
+		const { id, value } = e.target;
+		setTaskData(prev => ({
+			...prev,
+			[id]: value,
+		}));
+	};
+
 	return (
-		<section className={ styles.details }>
+		<form className={ styles.details }>
 			<div className={ styles.inputGroup }>
 				<label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
 				<input
 					className={ styles.input }
 					type="text" placeholder="Задача"
 					id="title"
-					value={ title }
-					onChange={ e => setTitle(e.target.value) }
+					value={ taskData.title }
+					onChange={ handleChangeInput }
 				/>
 			</div>
 
@@ -96,8 +161,8 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 					className={ styles.description }
 					placeholder="Описание"
 					id="description"
-					value={ description }
-					onChange={ e => setDescription(e.target.value) }
+					value={ taskData.description }
+					onChange={ handleChangeInput }
 				/>
 			</div>
 
@@ -110,16 +175,16 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 						min="2000-01-01"
 						max="2100-01-01"
 						id="startDate"
-						value={ startDate }
+						value={ taskData.startDate }
+						onChange={ handleChangeInput }
 						onBlur={ e => handleChangeDate('startDate', e) }
-						onChange={ e => setStartDate(e.target.value) }
 					/>
 					<input
 						className={ styles.inputDatetime }
 						type="time"
 						id="startTime"
-						value={ startTime }
-						onChange={ e => setStartTime(e.target.value) }
+						value={ taskData.startTime }
+						onChange={ handleChangeInput }
 					/>
 				</div>
 			</div>
@@ -131,20 +196,21 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
 						className={ styles.inputDatetime }
 						type="date"
 						max="2100-01-01"
-						id="endDatetime"
-						value={ endDate }
-						onChange={ e => setEndDate(e.target.value) }
+						id="endDate"
+						value={ taskData.endDate }
+						onChange={ handleChangeInput }
 						onBlur={ e => handleChangeDate('endDate', e) }
 					/>
 					<input
 						className={ styles.inputDatetime }
 						type="time"
-						value={ endTime }
-						onChange={ e => setEndTime(e.target.value) }
+						id="endTime"
+						value={ taskData.endTime }
+						onChange={ handleChangeInput }
 					/>
 				</div>
 			</div>
-		</section>
+		</form>
 	);
 };
 

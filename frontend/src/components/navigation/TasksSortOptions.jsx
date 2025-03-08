@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from "./TasksSortOptions.module.css";
 
-const TasksSortOptions = () => {
+const TasksSortOptions = React.memo(() => {
 	return (
 		<>
 			<label htmlFor="sortOptions" className={ styles.sortLabel }>Сортировать по:</label>
@@ -17,6 +17,6 @@ const TasksSortOptions = () => {
 			</select>
 		</>
 	);
-};
+});
 
 export default TasksSortOptions;

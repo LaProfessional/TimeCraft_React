@@ -1,11 +1,15 @@
 import React, { useContext, useEffect } from 'react';
+
 import { TaskContext } from "../providers/TaskProvider";
-import { SelectedTasksContext } from "../providers/SelectedTasksProvider";
+import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
+import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
+
 import styles from './Table.module.css';
 
 const Table = () => {
 	const { taskList, setTaskList } = useContext(TaskContext);
-	const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTasksContext);
+	const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+	const { setCurrentTaskId } = useContext(CurrentTaskIdContext);
 
 	useEffect(() => {
 		fetch('http://localhost:5000/tasks', {
@@ -41,7 +45,7 @@ const Table = () => {
 		setSelectedTaskIds(prevSelected => {
 			return prevSelected.includes(taskId)
 				? prevSelected.filter(id => id !== taskId)
-				: [...prevSelected, taskId];
+				: [ ...prevSelected, taskId ];
 		});
 	};
 
@@ -54,7 +58,7 @@ const Table = () => {
 							className={ styles.headerCheckbox }
 							type="checkbox"
 							onChange={ () => selectedAllTasks() }
-							checked={ selectedTaskIds.length === taskList.length }
+							checked={ selectedTaskIds.length === taskList.length && taskList.length !== 0 }
 						/>
 					</div>
 					<div className={ styles.tableHeaderCell }>Название</div>
@@ -77,10 +81,22 @@ const Table = () => {
 										checked={ selectedTaskIds.includes(id) }
 									/>
 								</div>
-								<div className={ styles.tableCell }>{ title }</div>
-								<div className={ styles.tableCell }>{ description }</div>
-								<div className={ styles.tableCell }>{ formattedDate(startDatetime) }</div>
-								<div className={ styles.tableCell }>{ formattedDate(endDatetime) }</div>
+								<div
+									className={ styles.tableCell }
+
+								>{ title }</div>
+								<div
+									className={ styles.tableCell }
+
+								>{ description }</div>
+								<div
+									className={ styles.tableCell }
+
+								>{ formattedDate(startDatetime) }</div>
+								<div
+									className={ styles.tableCell }
+
+								>{ formattedDate(endDatetime) }</div>
 							</div>
 						</div>
 					);

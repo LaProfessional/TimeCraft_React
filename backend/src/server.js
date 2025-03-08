@@ -20,16 +20,37 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.get('/tasks', async (req, response) => {
+	// const taskId = req.query.taskId;
+	// if (taskId) {
+	// 	const getTask = `
+    //         SELECT
+    //             id,
+    //             creation_datetime,
+    //             title,
+    //             description,
+    //             start_datetime,
+    //             end_datetime
+    //         FROM tasks
+    //         WHERE id = ($1)
+    //     ;`;
+	//
+	// 	const getTaskRes = await pool.query(getTask, [ taskId ]);
+	// 	const task = getTaskRes.rows;
+	//
+	// 	const res = task.map(task => convertToCamelCase(task));
+	// 	return response.status(200).json(res);
+	// }
+
 	const getTasks = `
-		SELECT 
-			id,
-			creation_datetime,
-			title,
-			description,
-			start_datetime,
-			end_datetime
+        SELECT 
+            id,
+            creation_datetime,
+            title,
+            description,
+            start_datetime,
+            end_datetime
         FROM tasks
-	;`;
+    ;`;
 
 	const getTasksRes = await pool.query(getTasks);
 	const tasks = getTasksRes.rows;
@@ -48,27 +69,23 @@ app.post('/tasks', async (req, response) => {
 	const creationDatetime = new Date().toISOString();
 
 	const createTask = `
-		INSERT INTO tasks (
-			creation_datetime,
-		    title,
-		    description,
-		    start_datetime,
-		    end_datetime
-		)
-		VALUES (
-        	$1,
-        	$2,
-        	$3,
-        	$4,
-        	$5     
-		) RETURNING 
+        INSERT INTO tasks (creation_datetime,
+                           title,
+                           description,
+                           start_datetime,
+                           end_datetime)
+        VALUES ($1,
+                $2,
+                $3,
+                $4,
+                $5) RETURNING 
 		id,
 		creation_datetime,
 		title,
 		description,
 		start_datetime,
 		end_datetime
-	;`;
+        ;`;
 
 	const creationTaskRes = await pool.query(createTask, [
 		creationDatetime,
@@ -82,6 +99,20 @@ app.post('/tasks', async (req, response) => {
 	const res = task.map(task => convertToCamelCase(task));
 
 	response.status(200).json(res[0]);
+});
+
+app.delete('/tasks', async (req, response) => {
+	const selectedTaskIds = req.body.selectedTaskIds;
+	const numericIds = selectedTaskIds.map(taskId => parseInt(taskId));
+
+	const query = `
+        DELETE
+        FROM tasks
+        WHERE id = ANY ($1)
+        ;`;
+
+	await pool.query(query, [ numericIds ]);
+	response.sendStatus(200);
 });
 
 const convertToCamelCase = dataObject => {

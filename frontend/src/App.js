@@ -3,7 +3,8 @@ import Navigation from "./components/navigation/Navigation";
 import Table from "./components/table/Table";
 
 import TaskProvider from "./components/providers/TaskProvider";
-import SelectedTasksProvider from "./components/providers/SelectedTasksProvider";
+import SelectedTaskIdsProvider from "./components/providers/SelectedTaskIdsProvider";
+import TaskIdProvider from "./components/providers/TaskIdProvider";
 
 import React from "react";
 import './styles/main.css';
@@ -11,13 +12,15 @@ import './styles/main.css';
 const App = () => {
 	return (
 		<>
-			<SelectedTasksProvider>
-				<TaskProvider>
-					<Header/>
-					<Navigation/>
-					<Table/>
-				</TaskProvider>
-			</SelectedTasksProvider>
+			<TaskIdProvider>
+				<SelectedTaskIdsProvider>
+					<TaskProvider>
+						<Header/>
+						<Navigation/>
+						<Table/>
+					</TaskProvider>
+				</SelectedTaskIdsProvider>
+			</TaskIdProvider>
 		</>
 	);
 };

@@ -1,11 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import Button from './Button';
 import QuickSearch from "./QuickSearch";
 import TasksSortOptions from "./TasksSortOptions";
 import ModalWindow from "../modalWindows/ModalWindow";
 import TaskCreationForm from "../modalWindows/TaskCreationForm";
 
-import { SelectedTasksContext } from "../providers/SelectedTasksProvider";
+import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
+import { TaskContext } from "../providers/TaskProvider";
+import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
 
 import styles from './Navigation.module.css';
 
@@ -13,38 +15,71 @@ const Navigation = () => {
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
 	const [ isClickBtnSave, setIsClickBtnSave ] = useState(false);
 
-	const { selectedTaskIds } = useContext(SelectedTasksContext);
+	const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+	const { taskList, setTaskList } = useContext(TaskContext);
+	const { setCurrentTaskId } = useContext(CurrentTaskIdContext);
 
 	const openModalWindow = () => setIsModalOpen(true);
+
+	const deleteTask = () => {
+		fetch('http://localhost:5000/tasks', {
+			method: 'DELETE',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify({ selectedTaskIds }),
+
+		}).then(() => setTaskList(prevTaskList => {
+			const updateTaskList = prevTaskList.filter(task => !selectedTaskIds.includes(task.id));
+			setSelectedTaskIds([]);
+			return updateTaskList;
+		}));
+	};
+
+	const memoizedTaskCreationForm = useMemo(() => (
+		<TaskCreationForm
+			isClickBtnSave={ isClickBtnSave }
+			setIsClickBtnSave={ setIsClickBtnSave }
+			setIsModalOpen={ setIsModalOpen }
+		/>
+	), [ isClickBtnSave ]);
 
 	return (
 		<>
 			<ModalWindow
-				isOpen={ isModalOpen }
-				setIsOpen={ setIsModalOpen }
+				isModalOpen={ isModalOpen }
+				setIsModalOpen={ setIsModalOpen }
 				title={ "Название задачи" }
 				isClickBtnSave={ isClickBtnSave }
 				setIsClickBtnSave={ setIsClickBtnSave }
-			><TaskCreationForm
-				isClickBtnSave={ isClickBtnSave }
-				setIsClickBtnSave={ setIsClickBtnSave }
-			/>
-			</ModalWindow>
+			>{ memoizedTaskCreationForm }</ModalWindow>
 
 			<nav className={ styles.navContainer }>
 				<h2 className={ styles.title }>Задачи N</h2>
 				<div className={ styles.leftNavContainer }>
-					<Button type='primary' onClick={ () => openModalWindow() }>Создать задачу</Button>
-					<Button type='primary' disabled={ 1 !== selectedTaskIds.length }>Редактировать</Button>
-					<Button type='danger' disabled={ !selectedTaskIds.length }>Удалить</Button>
-					<QuickSearch placeholder='Поиск...' type='text'></QuickSearch>
+
+					<Button type="primary" onClick={ openModalWindow }>Создать задачу</Button>
+
+					<Button
+						type="primary"
+						disabled={ 1 !== selectedTaskIds.length }
+						onClick={ () => setCurrentTaskId(taskList.filter(task => task.id === selectedTaskIds[0])) }
+					>Редактировать</Button>
+
+					<Button
+						type="danger"
+						disabled={ !selectedTaskIds.length }
+						onClick={ deleteTask }
+					>Удалить</Button>
+
+					<QuickSearch placeholder="Поиск..." type="text"></QuickSearch>
 
 					<div className={ styles.sortOptionsContainer }>
 						<TasksSortOptions></TasksSortOptions>
 					</div>
 				</div>
 				<div className={ styles.rightNavContainer }>
-					<Button type='danger'>Выйти</Button>
+					<Button type="danger">Выйти</Button>
 				</div>
 			</nav>
 		</>
