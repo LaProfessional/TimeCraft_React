@@ -20,13 +20,14 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen })
 	const { currentTaskId, setCurrentTaskId } = useContext(CurrentTaskIdContext);
 	const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
 
-	const createTask = newTask => {
+	const createTask = task => {
 		fetch('http://localhost:5000/tasks', {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
 			},
-			body: JSON.stringify({ newTask }),
+			body: JSON.stringify({ task }),
+
 		}).then(response => {
 			return response.json();
 
@@ -36,6 +37,19 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen })
 			resetForm();
 		});
 	};
+
+	const updateTask = (task, taskId) => {
+		fetch(`http://localhost:5000/tasks/?taskId=${ taskId }`, {
+			method: 'PATCH',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify({ task }),
+
+		}).then(response => {
+			console.log(response.json());
+		});
+	}
 
 	const resetForm = () => {
 		setTaskData(prev => ({
@@ -48,21 +62,29 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen })
 		setDefaultStartDatetime();
 	};
 
-	useEffect(() => {
-		if (!isClickBtnSave) return;
+	const handleSaveTask = () => {
 		const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
 		const endDatetime = taskData.endDate && taskData.endTime
 			? new Date(`${ taskData.endDate } ${ taskData.endTime }`).toISOString()
 			: null;
 
-		const newTask = {
+		const task = {
 			title: taskData.title,
 			description: taskData.description,
 			startDatetime,
 			endDatetime,
 		};
 
-		createTask(newTask);
+		if (selectedTaskIds.length) {
+			updateTask(task, selectedTaskIds[0]);
+		} else {
+			createTask(task);
+		}
+	};
+
+	useEffect(() => {
+		if (!isClickBtnSave) return;
+		handleSaveTask();
 	}, [ isClickBtnSave ]);
 
 	const setDefaultStartDatetime = () => {
@@ -96,14 +118,15 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen })
 
 		setIsModalOpen(true);
 
-		// setTitle(title);
-		// setDescription(description);
-		//
-		// setStartDate(startDatetime.split('T')[0]);
-		// setStartTime(new Date(startDate).toTimeString().slice(0, 8));
-		//
-		// setEndDate(endDatetime.split('T')[0]);
-		// setEndTime(new Date(endDatetime).toTimeString().slice(0, 8));
+		setTaskData(() => ({
+			title: title,
+			description: description,
+			startDate: startDatetime.split('T')[0],
+			startTime: new Date(startDatetime).toTimeString().slice(0, 8),
+			endDate: endDatetime.split('T')[0],
+			endTime: new Date(endDatetime).toTimeString().slice(0, 8),
+		}));
+
 	}, [ currentTaskId ]);
 
 	const handleChangeDate = (inputId, e) => {

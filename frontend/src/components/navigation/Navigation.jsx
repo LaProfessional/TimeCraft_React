@@ -14,6 +14,10 @@ import styles from './Navigation.module.css';
 const Navigation = () => {
 	const [ isModalOpen, setIsModalOpen ] = useState(false);
 	const [ isClickBtnSave, setIsClickBtnSave ] = useState(false);
+	const [ modalMode, setModalMode ] = useState('create');
+
+	const modalTitle = modalMode === "create" ? "Новая задача" : "Редактирование задачи";
+	const buttonText = modalMode === "create" ? "Сохранить" : "Редактировать";
 
 	const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
 	const { taskList, setTaskList } = useContext(TaskContext);
@@ -49,7 +53,10 @@ const Navigation = () => {
 			<ModalWindow
 				isModalOpen={ isModalOpen }
 				setIsModalOpen={ setIsModalOpen }
-				title={ "Название задачи" }
+
+				modalTitle={ modalTitle }
+				buttonText={ buttonText }
+
 				isClickBtnSave={ isClickBtnSave }
 				setIsClickBtnSave={ setIsClickBtnSave }
 			>{ memoizedTaskCreationForm }</ModalWindow>
@@ -58,12 +65,18 @@ const Navigation = () => {
 				<h2 className={ styles.title }>Задачи N</h2>
 				<div className={ styles.leftNavContainer }>
 
-					<Button type="primary" onClick={ openModalWindow }>Создать задачу</Button>
+					<Button type="primary" onClick={ () => {
+						openModalWindow();
+						setModalMode("create");
+					} }>Создать задачу</Button>
 
 					<Button
 						type="primary"
 						disabled={ 1 !== selectedTaskIds.length }
-						onClick={ () => setCurrentTaskId(taskList.filter(task => task.id === selectedTaskIds[0])) }
+						onClick={ () => {
+							setCurrentTaskId(taskList.filter(task => task.id === selectedTaskIds[0]));
+							setModalMode("edit");
+						} }
 					>Редактировать</Button>
 
 					<Button

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import pkg from 'pg';
 import cors from 'cors';
 
@@ -65,7 +65,7 @@ app.post('/tasks', async (req, response) => {
 		description,
 		startDatetime,
 		endDatetime,
-	} = req.body.newTask;
+	} = req.body.task;
 	const creationDatetime = new Date().toISOString();
 
 	const createTask = `
@@ -99,6 +99,36 @@ app.post('/tasks', async (req, response) => {
 	const res = task.map(task => convertToCamelCase(task));
 
 	response.status(200).json(res[0]);
+});
+
+app.patch('/tasks', async (req, response) => {
+	const taskId = req.query.taskId;
+
+	const {
+		title,
+		description,
+		startDatetime,
+		endDatetime,
+	} = req.body.task;
+
+	const updateTask = `
+		UPDATE tasks
+		SET title = $1,
+			description = $2,
+			startDatetime = $3,
+			endDatetime = $4
+		WHERE id = $5,
+	;`;
+
+	const updateTaskRes = await pool.query(updateTask, [
+		title,
+		description,
+		startDatetime,
+		endDatetime,
+		taskId
+	]);
+
+
 });
 
 app.delete('/tasks', async (req, response) => {
