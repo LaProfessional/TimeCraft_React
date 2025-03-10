@@ -2,14 +2,12 @@ import React, { useContext, useEffect } from 'react';
 
 import { TaskContext } from "../providers/TaskProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
-import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
 
 import styles from './Table.module.css';
 
 const Table = () => {
 	const { taskList, setTaskList } = useContext(TaskContext);
 	const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
-	const { setCurrentTaskId } = useContext(CurrentTaskIdContext);
 
 	useEffect(() => {
 		fetch('http://localhost:5000/tasks', {

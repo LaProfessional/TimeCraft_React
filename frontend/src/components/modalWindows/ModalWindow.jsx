@@ -3,7 +3,6 @@ import React from 'react';
 import styles from './ModalWindow.module.css';
 
 const ModalWindow = React.memo(({ isModalOpen, setIsModalOpen, modalTitle, buttonText, children, setIsClickBtnSave }) => {
-
 	const closeModalWindow = e => {
 		if (e.target === e.currentTarget) setIsModalOpen(false);
 	}

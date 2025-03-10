@@ -45,6 +45,7 @@ const Navigation = () => {
 			isClickBtnSave={ isClickBtnSave }
 			setIsClickBtnSave={ setIsClickBtnSave }
 			setIsModalOpen={ setIsModalOpen }
+			isModalOpen={ isModalOpen }
 		/>
 	), [ isClickBtnSave ]);
 

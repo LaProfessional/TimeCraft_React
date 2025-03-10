@@ -1,4 +1,4 @@
-import express, { response } from 'express';
+import express from 'express';
 import pkg from 'pg';
 import cors from 'cors';
 
@@ -20,27 +20,6 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.get('/tasks', async (req, response) => {
-	// const taskId = req.query.taskId;
-	// if (taskId) {
-	// 	const getTask = `
-    //         SELECT
-    //             id,
-    //             creation_datetime,
-    //             title,
-    //             description,
-    //             start_datetime,
-    //             end_datetime
-    //         FROM tasks
-    //         WHERE id = ($1)
-    //     ;`;
-	//
-	// 	const getTaskRes = await pool.query(getTask, [ taskId ]);
-	// 	const task = getTaskRes.rows;
-	//
-	// 	const res = task.map(task => convertToCamelCase(task));
-	// 	return response.status(200).json(res);
-	// }
-
 	const getTasks = `
         SELECT 
             id,
@@ -101,9 +80,8 @@ app.post('/tasks', async (req, response) => {
 	response.status(200).json(res[0]);
 });
 
-app.patch('/tasks', async (req, response) => {
+app.put('/tasks', async (req, response) => {
 	const taskId = req.query.taskId;
-
 	const {
 		title,
 		description,
@@ -115,9 +93,10 @@ app.patch('/tasks', async (req, response) => {
 		UPDATE tasks
 		SET title = $1,
 			description = $2,
-			startDatetime = $3,
-			endDatetime = $4
-		WHERE id = $5,
+			start_datetime = $3,
+			end_datetime = $4
+		WHERE id = $5
+		RETURNING *
 	;`;
 
 	const updateTaskRes = await pool.query(updateTask, [
@@ -127,8 +106,9 @@ app.patch('/tasks', async (req, response) => {
 		endDatetime,
 		taskId
 	]);
-
-
+	const task = updateTaskRes.rows;
+	const res = task.map(task => convertToCamelCase(task));
+	response.status(200).json(res[0]);
 });
 
 app.delete('/tasks', async (req, response) => {
