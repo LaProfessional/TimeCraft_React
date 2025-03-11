@@ -3,10 +3,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { TaskContext } from "../providers/TaskProvider";
 import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
+import { ModalModeContext } from "../providers/ModalModeProvider";
 
-import styles from "./TaskCreationForm.module.css";
+import taskCreationForm from "./TaskCreationForm.module.css";
 
-const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, isModalOpen }) => {
+const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
     const [ taskData, setTaskData ] = useState({
         title: '',
         description: '',
@@ -16,9 +17,10 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
         endTime: '',
     });
 
-    const { taskList, setTaskList } = useContext(TaskContext);
-    const { currentTaskId, setCurrentTaskId } = useContext(CurrentTaskIdContext);
+    const { setTaskList } = useContext(TaskContext);
+    const { currentTaskId } = useContext(CurrentTaskIdContext);
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+    const { isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
 
     const createTask = task => {
         fetch('http://localhost:5000/tasks', {
@@ -56,17 +58,6 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
         });
     };
 
-    const resetForm = () => {
-        setTaskData(prev => ({
-            ...prev,
-            title: '',
-            description: '',
-            endDate: '',
-            endTime: '',
-        }));
-        setDefaultStartDatetime();
-    };
-
     const handleSaveTask = () => {
         const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
         const endDatetime = taskData.endDate && taskData.endTime
@@ -88,31 +79,23 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
     };
 
     useEffect(() => {
+        resetForm();
         if (!isClickBtnSave) return;
         handleSaveTask();
-    }, [ isClickBtnSave ]);
+    }, [ isClickBtnSave, isModalOpen ]);
 
-    const setDefaultStartDatetime = () => {
-        const currentDate = new Date();
-        const defaultDate = currentDate.toISOString().slice(0, 10);
-
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const defaultTime = `${ hours }:${ minutes }`;
-
+    const resetForm = () => {
         setTaskData(prev => ({
             ...prev,
-            startDate: defaultDate,
-            startTime: defaultTime,
+            title: '',
+            description: '',
+            endDate: '',
+            endTime: '',
         }));
+        setDefaultStartDatetime();
     };
 
-    useEffect(() => setDefaultStartDatetime(), []);
-
-    useEffect(() => {
-        if (!currentTaskId) return;
-
+    const populateTaskData = () => {
         const task = currentTaskId[0];
         const {
             title,
@@ -131,7 +114,11 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
             endDate: endDatetime.split('T')[0],
             endTime: new Date(endDatetime).toTimeString().slice(0, 8),
         }));
+    };
 
+    useEffect(() => {
+        if (!currentTaskId) return;
+        populateTaskData();
     }, [ currentTaskId ]);
 
     const handleChangeDate = (inputId, e) => {
@@ -170,12 +157,30 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
         }));
     };
 
+    const setDefaultStartDatetime = () => {
+        const currentDate = new Date();
+        const defaultDate = currentDate.toISOString().slice(0, 10);
+
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const defaultTime = `${ hours }:${ minutes }`;
+
+        setTaskData(prev => ({
+            ...prev,
+            startDate: defaultDate,
+            startTime: defaultTime,
+        }));
+    };
+
+    useEffect(() => setDefaultStartDatetime(), []);
+
     return (
-        <form className={ styles.details }>
-            <div className={ styles.inputGroup }>
-                <label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
+        <form className={ taskCreationForm.details }>
+            <div className={ taskCreationForm.inputGroup }>
+                <label className={ taskCreationForm.blockTitle } htmlFor="title">Название задачи:</label>
                 <input
-                    className={ styles.input }
+                    className={ taskCreationForm.input }
                     type="text" placeholder="Задача"
                     id="title"
                     value={ taskData.title }
@@ -183,10 +188,10 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
                 />
             </div>
 
-            <div className={ styles.inputGroup }>
-                <label className={ styles.blockTitle } htmlFor="description">Описание:</label>
+            <div className={ taskCreationForm.inputGroup }>
+                <label className={ taskCreationForm.blockTitle } htmlFor="description">Описание:</label>
                 <textarea
-                    className={ styles.description }
+                    className={ taskCreationForm.description }
                     placeholder="Описание"
                     id="description"
                     value={ taskData.description }
@@ -194,11 +199,11 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
                 />
             </div>
 
-            <div className={ styles.inputGroup }>
-                <label className={ styles.blockTitle } htmlFor="startDate">Дата начала:</label>
-                <div className={ styles.dateGroup }>
+            <div className={ taskCreationForm.inputGroup }>
+                <label className={ taskCreationForm.blockTitle } htmlFor="startDate">Дата начала:</label>
+                <div className={ taskCreationForm.dateGroup }>
                     <input
-                        className={ styles.inputDatetime }
+                        className={ taskCreationForm.inputDatetime }
                         type="date"
                         min="2000-01-01"
                         max="2100-01-01"
@@ -208,7 +213,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
                         onBlur={ e => handleChangeDate('startDate', e) }
                     />
                     <input
-                        className={ styles.inputDatetime }
+                        className={ taskCreationForm.inputDatetime }
                         type="time"
                         id="startTime"
                         value={ taskData.startTime }
@@ -217,11 +222,11 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
                 </div>
             </div>
 
-            <div className={ styles.inputGroup }>
-                <label className={ styles.blockTitle } htmlFor="endDatetime">Дата окончания:</label>
-                <div className={ styles.dateGroup }>
+            <div className={ taskCreationForm.inputGroup }>
+                <label className={ taskCreationForm.blockTitle } htmlFor="endDatetime">Дата окончания:</label>
+                <div className={ taskCreationForm.dateGroup }>
                     <input
-                        className={ styles.inputDatetime }
+                        className={ taskCreationForm.inputDatetime }
                         type="date"
                         max="2100-01-01"
                         id="endDate"
@@ -230,7 +235,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave, setIsModalOpen, i
                         onBlur={ e => handleChangeDate('endDate', e) }
                     />
                     <input
-                        className={ styles.inputDatetime }
+                        className={ taskCreationForm.inputDatetime }
                         type="time"
                         id="endTime"
                         value={ taskData.endTime }

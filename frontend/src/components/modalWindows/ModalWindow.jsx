@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import { ModalModeContext } from "../providers/ModalModeProvider";
 
 import styles from './ModalWindow.module.css';
 
-const ModalWindow = React.memo(({ isModalOpen, setIsModalOpen, modalTitle, buttonText, children, setIsClickBtnSave }) => {
+const ModalWindow = React.memo(({ children, setIsClickBtnSave }) => {
+	const { modalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
+
 	const closeModalWindow = e => {
 		if (e.target === e.currentTarget) setIsModalOpen(false);
 	}
@@ -14,7 +18,7 @@ const ModalWindow = React.memo(({ isModalOpen, setIsModalOpen, modalTitle, butto
 		>
 			<div className={ `${ styles.container } ${ isModalOpen ? styles.slidingModalWindow : '' }` }>
 				<div className={ styles.headerContainer }>
-					<h2 className={ styles.title }>{ modalTitle }</h2>
+					<h2 className={ styles.title }>{ modalMode.title }</h2>
 
 					<button
 						className={ styles.btnClose }
@@ -33,7 +37,7 @@ const ModalWindow = React.memo(({ isModalOpen, setIsModalOpen, modalTitle, butto
 							e.stopPropagation();
 							closeModalWindow(e);
 						} }
-					>{ buttonText }</button>
+					>{ modalMode.buttonText }</button>
 
 					<button
 						className={ `${ styles.btn } ${ styles.btnCancel }` }
