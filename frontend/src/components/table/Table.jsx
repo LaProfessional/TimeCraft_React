@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import TaskTableCell from "./TaskTableCell";
 
-import { TaskContext } from "../providers/TaskProvider";
+import { TaskContext } from "../providers/TaskListProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 
 import styles from './Table.module.css';
@@ -68,7 +68,7 @@ const Table = () => {
                 </div>
 
                 { taskList.map(task => {
-                    const { id, creationDatetime, title, description, startDatetime, endDatetime } = task;
+                    const { id, title, description, startDatetime, endDatetime } = task;
 
                     return (
                         <div className={ styles.tableBody } key={ id }>

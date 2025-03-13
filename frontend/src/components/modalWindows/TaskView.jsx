@@ -1,73 +1,53 @@
 import React, { useContext } from 'react';
 
-import { TaskContext } from "../providers/TaskProvider";
+import { TaskContext } from "../providers/TaskListProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 
-import taskCreationForm from './TaskCreationForm.module.css';
-import taskView from "./TaskView.module.css";
+import styles from './TaskCreationForm.module.css';
 
 const TaskView = () => {
-
     const { taskList } = useContext(TaskContext);
     const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
 
+    const task = taskList.filter(task => task.id === selectedTaskIds[0]);
+    const {
+        title,
+        description,
+        startDatetime,
+        endDatetime,
+    } = task[0];
+
+    const formattedDate = dateTime => {
+        return new Intl.DateTimeFormat(navigator.language, {
+            year: 'numeric',
+            month: 'short',
+            weekday: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        }).format(new Date(dateTime));
+    };
+
     return (
-        <section className={ taskCreationForm.details }>
-            <div className={ taskCreationForm.inputGroup }>
-                <h2 className={ taskCreationForm.blockTitle }>Название задачи:</h2>
+        <section className={ styles.details }>
+            <div className={ styles.contentGroup }>
+                <h2 className={ styles.blockTitle }>Название задачи:</h2>
+                <p className={ styles.content }>{ title }</p>
             </div>
 
-            <div className={ taskCreationForm.inputGroup }>
-                {/*<label className={ styles.blockTitle } htmlFor="description">Описание:</label>*/ }
-                {/*<textarea*/ }
-                {/*    className={ styles.description }*/ }
-                {/*    placeholder="Описание"*/ }
-                {/*    id="description"*/ }
-                {/*    value={ taskData.description }*/ }
-                {/*/>*/ }
+            <div className={ styles.contentGroup }>
+                <h2 className={ styles.blockTitle }>Описание:</h2>
+                <p className={ styles.content }>{ description }</p>
             </div>
 
-            <div className={ taskCreationForm.inputGroup }>
-                <label className={ taskCreationForm.blockTitle } htmlFor="startDate">Дата начала:</label>
-                <div className={ taskCreationForm.dateGroup }>
-                    {/*<input*/ }
-                    {/*    className={ styles.inputDatetime }*/ }
-                    {/*    type="date"*/ }
-                    {/*    min="2000-01-01"*/ }
-                    {/*    max="2100-01-01"*/ }
-                    {/*    id="startDate"*/ }
-                    {/*    value={ taskData.startDate }*/ }
-                    {/*    onChange={ handleChangeInput }*/ }
-                    {/*/>*/ }
-                    {/*<input*/ }
-                    {/*    className={ styles.inputDatetime }*/ }
-                    {/*    type="time"*/ }
-                    {/*    id="startTime"*/ }
-                    {/*    value={ taskData.startTime }*/ }
-                    {/*/>*/ }
-                </div>
+            <div className={ styles.contentGroup }>
+                <h2 className={ styles.blockTitle }>Дата начала:</h2>
+                <time className={ styles.content }>{ formattedDate(startDatetime) }</time>
             </div>
 
-            <div className={ taskCreationForm.inputGroup }>
-                <label className={ taskCreationForm.blockTitle } htmlFor="endDatetime">Дата окончания:</label>
-                <div className={ taskCreationForm.dateGroup }>
-                    {/*<input*/ }
-                    {/*    className={ styles.inputDatetime }*/ }
-                    {/*    type="date"*/ }
-                    {/*    max="2100-01-01"*/ }
-                    {/*    id="endDate"*/ }
-                    {/*    value={ taskData.endDate }*/ }
-                    {/*    onChange={ handleChangeInput }*/ }
-                    {/*    onBlur={ e => handleChangeDate('endDate', e) }*/ }
-                    {/*/>*/ }
-                    {/*<input*/ }
-                    {/*    className={ styles.inputDatetime }*/ }
-                    {/*    type="time"*/ }
-                    {/*    id="endTime"*/ }
-                    {/*    value={ taskData.endTime }*/ }
-                    {/*    onChange={ handleChangeInput }*/ }
-                    {/*/>*/ }
-                </div>
+            <div className={ styles.contentGroup }>
+                <h2 className={ styles.blockTitle }>Дата окончания:</h2>
+                <time className={ styles.content }>{ formattedDate(endDatetime) }</time>
             </div>
         </section>
     );

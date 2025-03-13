@@ -2,7 +2,7 @@ import React, { createContext, useState } from 'react';
 
 export const TaskContext = createContext();
 
-const TaskProvider = ({ children }) => {
+const TaskListProvider = ({ children }) => {
 	const [taskList, setTaskList] = useState([]);
 
 	return (
@@ -12,4 +12,4 @@ const TaskProvider = ({ children }) => {
 	);
 };
 
-export default TaskProvider;
+export default TaskListProvider;

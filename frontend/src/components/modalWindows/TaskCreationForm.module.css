@@ -67,3 +67,14 @@
     outline: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+/* TASK VIEW */
+.contentGroup {
+    margin-bottom: 15px;
+}
+
+.content {
+    font-size: 14px;
+    color: #2b5b4e;
+    word-break: break-all;
+}

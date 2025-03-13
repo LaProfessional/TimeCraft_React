@@ -7,9 +7,7 @@ const Button = React.memo(({ type = 'primary', disabled, children, onClick }) =>
 			className={ `${ styles.button } ${ styles[type] }` }
 			onClick={ onClick }
 			disabled={ disabled }
-		>
-			{ children }
-		</button>
+		>{ children }</button>
 	);
 });
 

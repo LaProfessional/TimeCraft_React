@@ -7,8 +7,7 @@ import TaskCreationForm from "../modalWindows/TaskCreationForm";
 import TaskView from "../modalWindows/TaskView";
 
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
-import { TaskContext } from "../providers/TaskProvider";
-import { CurrentTaskIdContext } from "../providers/TaskIdProvider";
+import { TaskContext } from "../providers/TaskListProvider";
 import { ModalModeContext } from "../providers/ModalModeProvider";
 
 import styles from './Navigation.module.css';
@@ -17,8 +16,7 @@ const Navigation = () => {
     const [ isClickBtnSave, setIsClickBtnSave ] = useState(false);
 
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
-    const { taskList, setTaskList } = useContext(TaskContext);
-    const { setCurrentTaskId } = useContext(CurrentTaskIdContext);
+    const { setTaskList } = useContext(TaskContext);
     const { modalMode, setModalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
 
     const deleteTask = () => {
@@ -69,7 +67,6 @@ const Navigation = () => {
                         type="primary"
                         disabled={ 1 !== selectedTaskIds.length }
                         onClick={ () => {
-                            setCurrentTaskId(taskList.filter(task => task.id === selectedTaskIds[0]));
                             setModalMode("edit");
                             setIsModalOpen(true);
                         } }
