@@ -1,26 +1,14 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import TaskTableCell from "./TaskTableCell";
 
-import { TaskContext } from "../providers/TaskListProvider";
+import { TaskContext } from "../providers/TaskProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 
 import styles from './Table.module.css';
 
 const Table = () => {
-    const { taskList, setTaskList } = useContext(TaskContext);
+    const { taskList } = useContext(TaskContext);
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
-
-    const getTasks = () => {
-        fetch('http://localhost:5000/tasks', {
-            method: 'GET',
-            headers: {
-                'Content-type': 'application/json',
-            },
-        }).then(response => {
-            return response.json();
-        }).then(tasks => setTaskList(tasks));
-    };
-    useEffect(() => getTasks(), []);
 
     const formattedDate = dateTime => {
         return new Intl.DateTimeFormat(navigator.language, {

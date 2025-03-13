@@ -2,7 +2,7 @@ import Header from "./components/header/Header";
 import Navigation from "./components/navigation/Navigation";
 import Table from "./components/table/Table";
 
-import TaskListProvider from "./components/providers/TaskListProvider";
+import TaskProvider from "./components/providers/TaskProvider";
 import SelectedTaskIdsProvider from "./components/providers/SelectedTaskIdsProvider";
 import ModalModeProvider from "./components/providers/ModalModeProvider";
 
@@ -14,11 +14,11 @@ const App = () => {
         <>
             <ModalModeProvider>
                 <SelectedTaskIdsProvider>
-                    <TaskListProvider>
+                    <TaskProvider>
                         <Header/>
                         <Navigation/>
                         <Table/>
-                    </TaskListProvider>
+                    </TaskProvider>
                 </SelectedTaskIdsProvider>
             </ModalModeProvider>
         </>

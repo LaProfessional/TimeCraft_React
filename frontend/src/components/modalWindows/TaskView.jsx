@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { TaskContext } from "../providers/TaskListProvider";
+import { TaskContext } from "../providers/TaskProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 
 import styles from './TaskCreationForm.module.css';
@@ -10,6 +10,9 @@ const TaskView = () => {
     const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
 
     const task = taskList.filter(task => task.id === selectedTaskIds[0]);
+
+    if (!task.length) return;
+
     const {
         title,
         description,

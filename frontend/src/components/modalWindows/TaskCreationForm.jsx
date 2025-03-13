@@ -1,122 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 
-import { TaskContext } from "../providers/TaskListProvider";
-import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
-import { ModalModeContext } from "../providers/ModalModeProvider";
+import { TaskContext } from "../providers/TaskProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
-const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
-    const [ taskData, setTaskData ] = useState({
-        title: '',
-        description: '',
-        startDate: '',
-        startTime: '',
-        endDate: '',
-        endTime: '',
-    });
-
-    const { taskList, setTaskList } = useContext(TaskContext);
-    const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
-    const { modalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
-
-    const createTask = task => {
-        fetch('http://localhost:5000/tasks', {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ task }),
-
-        }).then(response => {
-            return response.json();
-
-        }).then(task => {
-            setTaskList(prev => [ ...prev, task ]);
-            setIsClickBtnSave(false);
-            resetForm();
-        });
-    };
-
-    const updateTask = (task, taskId) => {
-        fetch(`http://localhost:5000/tasks/?taskId=${ taskId }`, {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({ task }),
-
-        }).then(response => {
-            return response.json();
-        }).then(updateTask => {
-            setTaskList(prevTasks => prevTasks.map(task => task.id === updateTask.id ? updateTask : task));
-            setIsClickBtnSave(false);
-            setSelectedTaskIds([]);
-            resetForm();
-        });
-    };
-
-    const handleSaveTask = () => {
-        const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
-        const endDatetime = taskData.endDate && taskData.endTime
-            ? new Date(`${ taskData.endDate } ${ taskData.endTime }`).toISOString()
-            : null;
-
-        const task = {
-            title: taskData.title,
-            description: taskData.description,
-            startDatetime,
-            endDatetime,
-        };
-
-        if (modalMode.type === "edit") {
-            updateTask(task, selectedTaskIds[0]);
-        } else {
-            createTask(task);
-        }
-    };
-
-    useEffect(() => {
-        resetForm();
-        if (!isClickBtnSave) return;
-        handleSaveTask();
-    }, [ isClickBtnSave, isModalOpen ]);
-
-    const resetForm = () => {
-        setTaskData(prev => ({
-            ...prev,
-            title: '',
-            description: '',
-            endDate: '',
-            endTime: '',
-        }));
-        setDefaultStartDatetime();
-    };
-
-    const populateTaskData = () => {
-        const task = taskList.filter(task => task.id === selectedTaskIds[0]);
-        const {
-            title,
-            description,
-            startDatetime,
-            endDatetime,
-        } = task[0];
-
-        setIsModalOpen(true);
-
-        setTaskData(() => ({
-            title: title,
-            description: description,
-            startDate: startDatetime.split('T')[0],
-            startTime: new Date(startDatetime).toTimeString().slice(0, 8),
-            endDate: endDatetime.split('T')[0],
-            endTime: new Date(endDatetime).toTimeString().slice(0, 8),
-        }));
-    };
-
-    useEffect(() => {
-        if (modalMode.type === "edit") populateTaskData();
-    }, [ modalMode ]);
+const TaskCreationForm = () => {
+    const { taskData, setTaskData } = useContext(TaskContext);
+    const {
+        title,
+        description,
+        startDate,
+        startTime,
+        endDate,
+        endTime,
+    } = taskData;
 
     const handleChangeDate = (inputId, e) => {
         const currentYear = parseInt(e.target.value.slice(0, 4));
@@ -133,12 +30,12 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                 }
                 break;
             case 'endDate':
-                const minYear = parseInt(taskData.startDate.slice(0, 4));
+                const minYear = parseInt(startDate.slice(0, 4));
 
                 if (2100 < currentYear || minYear > currentYear) {
                     setTaskData(prev => ({
                         ...prev,
-                        endDate: taskData.startDate,
+                        endDate: startDate,
                     }));
                 }
                 break;
@@ -154,24 +51,6 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
         }));
     };
 
-    const setDefaultStartDatetime = () => {
-        const currentDate = new Date();
-        const defaultDate = currentDate.toISOString().slice(0, 10);
-
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const defaultTime = `${ hours }:${ minutes }`;
-
-        setTaskData(prev => ({
-            ...prev,
-            startDate: defaultDate,
-            startTime: defaultTime,
-        }));
-    };
-
-    useEffect(() => setDefaultStartDatetime(), []);
-
     return (
         <form className={ styles.details }>
             <div className={ styles.inputGroup }>
@@ -180,7 +59,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                     className={ styles.input }
                     type="text" placeholder="Задача"
                     id="title"
-                    value={ taskData.title }
+                    value={ title }
                     onChange={ handleChangeInput }
                 />
             </div>
@@ -191,7 +70,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                     className={ styles.description }
                     placeholder="Описание"
                     id="description"
-                    value={ taskData.description }
+                    value={ description }
                     onChange={ handleChangeInput }
                 />
             </div>
@@ -205,7 +84,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                         min="2000-01-01"
                         max="2100-01-01"
                         id="startDate"
-                        value={ taskData.startDate }
+                        value={ startDate }
                         onChange={ handleChangeInput }
                         onBlur={ e => handleChangeDate('startDate', e) }
                     />
@@ -213,7 +92,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                         className={ styles.inputDatetime }
                         type="time"
                         id="startTime"
-                        value={ taskData.startTime }
+                        value={ startTime }
                         onChange={ handleChangeInput }
                     />
                 </div>
@@ -227,7 +106,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                         type="date"
                         max="2100-01-01"
                         id="endDate"
-                        value={ taskData.endDate }
+                        value={ endDate }
                         onChange={ handleChangeInput }
                         onBlur={ e => handleChangeDate('endDate', e) }
                     />
@@ -235,7 +114,7 @@ const TaskCreationForm = ({ isClickBtnSave, setIsClickBtnSave }) => {
                         className={ styles.inputDatetime }
                         type="time"
                         id="endTime"
-                        value={ taskData.endTime }
+                        value={ endTime }
                         onChange={ handleChangeInput }
                     />
                 </div>
