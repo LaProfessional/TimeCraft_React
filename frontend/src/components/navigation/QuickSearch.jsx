@@ -12,14 +12,14 @@ const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }
         clearTimeout(searchTimeoutId);
 
         searchTimeoutId = setTimeout(() => {
-            const queryString = e.target.value.trim();
-            sortTasks(queryString);
+            const search = e.target.value.trim();
+            sortTasks(search);
         }, 500);
     };
 
-    const sortTasks = queryString => {
+    const sortTasks = search => {
         clearTimeout(searchTimeoutId);
-        setQueryObject(prev => ({ ...prev, queryString }));
+        setQueryObject({ search });
     };
 
     return (

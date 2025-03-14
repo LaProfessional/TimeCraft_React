@@ -34,11 +34,11 @@ const TaskProvider = ({ children }) => {
             );
             setSelectedTaskIds([]);
         });
-    }
+    };
 
     const generateQueryString = params => {
         const urlParams = new URLSearchParams;
-        console.log(params);
+
         Object.entries(params).forEach(([ key, value ]) => {
             if (value != null) urlParams.append(key, value);
         });
@@ -47,8 +47,8 @@ const TaskProvider = ({ children }) => {
 
     const getTasks = () => {
         const queryString = generateQueryString({ ...queryObject });
-        console.log(queryString);
-        fetch(`http://localhost:5000/tasks?queryString=${ queryString }`, {
+
+        fetch(`http://localhost:5000/tasks?${ queryString }`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',

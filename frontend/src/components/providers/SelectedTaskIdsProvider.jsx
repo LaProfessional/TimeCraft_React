@@ -6,9 +6,9 @@ const SelectedTaskIdsProvider = ({ children }) => {
 	const [ selectedTaskIds, setSelectedTaskIds ] = useState([]);
 
 	return (
-		<SelectedTaskIdsContext value={ { selectedTaskIds, setSelectedTaskIds } }>
+		<SelectedTaskIdsContext.Provider value={ { selectedTaskIds, setSelectedTaskIds } }>
 			{ children }
-		</SelectedTaskIdsContext>
+		</SelectedTaskIdsContext.Provider>
 	);
 };
 

@@ -21,14 +21,14 @@ const TasksSortOptions = React.memo(() => {
                 id='sortOptions'
                 onChange={ sortTasks }
             >
-                <option value='startDatetime|asc'>Дате создания (по возрастанию)</option>
-                <option value='startDatetime|desc'>Дате создания (по убыванию)</option>
+                <option value='creation_datetime|asc'>Дате создания (по возрастанию)</option>
+                <option value='creation_datetime|desc'>Дате создания (по убыванию)</option>
                 <option value='title|asc'>Названию (по возрастанию)</option>
                 <option value='title|desc'>Названию (по убыванию)</option>
-                <option value='startDatetime|asc'>Дате начала (по возрастанию)</option>
-                <option value='startDatetime|desc'>Дате начала (по убыванию)</option>
-                <option value='endDatetime|asc'>Дате окончания (по возрастанию)</option>
-                <option value='endDatetime|desc'>Дате окончания (по убыванию)</option>
+                <option value='start_datetime|asc'>Дате начала (по возрастанию)</option>
+                <option value='start_datetime|desc'>Дате начала (по убыванию)</option>
+                <option value='end_datetime|asc'>Дате окончания (по возрастанию)</option>
+                <option value='end_datetime|desc'>Дате окончания (по убыванию)</option>
             </select>
         </>
     );
