@@ -17,6 +17,7 @@ const TaskProvider = ({ children }) => {
         endTime: '',
     });
     const [ queryObject, setQueryObject ] = useState({});
+    let [ portionLength, setPortionLength ] = useState(0);
 
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { modalMode } = useContext(ModalModeContext);
@@ -46,16 +47,25 @@ const TaskProvider = ({ children }) => {
     };
 
     const getTasks = () => {
-        const queryString = generateQueryString({ ...queryObject });
+        const queryString = generateQueryString(queryObject);
+        portionLength = taskList.length;
 
-        fetch(`http://localhost:5000/tasks?${ queryString }`, {
+        fetch(`http://localhost:5000/tasks?${ queryString }&portionLength=${ portionLength }`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
             },
         }).then(response => {
             return response.json();
-        }).then(tasks => setTaskList(tasks));
+        }).then(tasksRes => {
+            const {
+                tasks,
+                portionLength,
+            } = tasksRes;
+
+            setPortionLength(portionLength);
+            setTaskList(prevTasks => ([ ...prevTasks, ...tasks ]));
+        });
     };
     useEffect(() => getTasks(), [ queryObject ]);
 
@@ -172,6 +182,7 @@ const TaskProvider = ({ children }) => {
         resetForm,
         taskList,
         setTaskList,
+        portionLength
     }), [ taskList, deleteTask ]);
 
     const taskActionsValue = useMemo(() => ({

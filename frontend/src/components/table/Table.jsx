@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import TaskTableCell from "./TaskTableCell";
 
 import { TaskContext } from "../providers/TaskProvider";
@@ -7,8 +7,10 @@ import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 import styles from './Table.module.css';
 
 const Table = () => {
-    const { taskList } = useContext(TaskContext);
+    const { taskList, getTasks, portionLength } = useContext(TaskContext);
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+
+    const lastTask = useRef(null);
 
     const formattedDate = dateTime => {
         return new Intl.DateTimeFormat(navigator.language, {
@@ -37,6 +39,20 @@ const Table = () => {
         });
     };
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    observer.unobserve(entry.target);
+                    getTasks();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        if (lastTask.current) observer.observe(lastTask.current);
+        if (parseInt(portionLength) === taskList.length) observer.disconnect();
+    }, [ taskList ]);
+
     return (
         <div className={ styles.tableContainer }>
             <div className={ styles.table }>
@@ -55,12 +71,12 @@ const Table = () => {
                     <div className={ styles.tableHeaderCell }>Дата окончания</div>
                 </div>
 
-                { taskList.map(task => {
+                { taskList.map((task, index) => {
                     const { id, title, description, startDatetime, endDatetime } = task;
 
                     return (
                         <div className={ styles.tableBody } key={ id }>
-                            <div className={ styles.tableRow }>
+                            <div className={ styles.tableRow } ref={ index === taskList.length - 1 ? lastTask : null }>
                                 <div className={ styles.tableCell }>
                                     <input
                                         className={ styles.checkbox }

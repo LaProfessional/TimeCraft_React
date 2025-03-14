@@ -21,26 +21,26 @@ app.use(express.json());
 
 app.get('/tasks', async (req, response) => {
     const {
-        search: search,
-        field: field,
-        order: order,
+        search,
+        field,
+        order,
+        portionLength,
     } = req.query;
+    const limit = 20;
 
     if (search) {
         const queryString = `
-            SELECT 
-                id,
-                creation_datetime,
-                title,
-                description,
-                start_datetime,
-                end_datetime
+            SELECT id,
+                   creation_datetime,
+                   title,
+                   description,
+                   start_datetime,
+                   end_datetime
             FROM tasks
-            WHERE title ILIKE $1
-            ORDER BY title ASC
+            WHERE (title ILIKE $1 OR description ILIKE $1)
             ;`;
 
-        const searchResults = await pool.query(queryString, [ search ]);
+        const searchResults = await pool.query(queryString, [ `%${ search }%` ]);
         const tasks = searchResults.rows;
         const res = tasks.map(task => convertToCamelCase(task));
 
@@ -73,14 +73,15 @@ app.get('/tasks', async (req, response) => {
                description,
                start_datetime,
                end_datetime
-        FROM tasks
+        FROM tasks LIMIT $1
+        OFFSET $2
         ;`;
 
-    const getTasksRes = await pool.query(getTasks);
+    const getTasksRes = await pool.query(getTasks, [ limit, portionLength ]);
     const tasks = getTasksRes.rows;
 
     const res = tasks.map(task => convertToCamelCase(task));
-    response.status(200).json(res);
+    response.status(200).json({ tasks: res, portionLength: portionLength });
 });
 
 app.post('/tasks', async (req, response) => {
