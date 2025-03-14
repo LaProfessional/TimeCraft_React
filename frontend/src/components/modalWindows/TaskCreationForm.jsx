@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 
-import { TaskContext } from "../providers/TaskProvider";
+import { TaskActionsContext } from "../providers/TaskProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
 const TaskCreationForm = () => {
-    const { taskData, setTaskData } = useContext(TaskContext);
+    const { taskData, setTaskData } = useContext(TaskActionsContext);
     const {
         title,
         description,

@@ -20,6 +20,15 @@ app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json());
 
 app.get('/tasks', async (req, response) => {
+	const {
+		queryString,
+		field,
+		order,
+	} = req.query;
+	console.log(queryString);
+	// console.log(field);
+	console.log(order);
+
 	const getTasks = `
         SELECT 
             id,

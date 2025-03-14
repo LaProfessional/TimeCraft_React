@@ -69,10 +69,10 @@ const Table = () => {
                                         checked={ selectedTaskIds.includes(id) }
                                     />
                                 </div>
-                                <TaskTableCell id={ id }>{title}</TaskTableCell>
-                                <TaskTableCell id={ id }>{description}</TaskTableCell>
-                                <TaskTableCell id={ id }>{formattedDate(startDatetime)}</TaskTableCell>
-                                <TaskTableCell id={ id }>{formattedDate(endDatetime)}</TaskTableCell>
+                                <TaskTableCell id={ id }>{ title }</TaskTableCell>
+                                <TaskTableCell id={ id }>{ description }</TaskTableCell>
+                                <TaskTableCell id={ id }>{ formattedDate(startDatetime) }</TaskTableCell>
+                                <TaskTableCell id={ id }>{ formattedDate(endDatetime) }</TaskTableCell>
                             </div>
                         </div>
                     );

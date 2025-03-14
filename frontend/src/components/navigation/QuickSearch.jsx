@@ -1,10 +1,39 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
+import { TaskActionsContext } from "../providers/TaskProvider";
+
 import styles from "./QuickSearch.module.css";
 
 const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }) => {
-	return (
-		<input className={ styles.quickSearch } placeholder={ placeholder } type={ type }/>
-	);
+    const { setQueryObject } = useContext(TaskActionsContext);
+
+    let searchTimeoutId;
+    const inputHandler = e => {
+        clearTimeout(searchTimeoutId);
+
+        searchTimeoutId = setTimeout(() => {
+            const queryString = e.target.value.trim();
+            sortTasks(queryString);
+        }, 500);
+    };
+
+    const sortTasks = queryString => {
+        clearTimeout(searchTimeoutId);
+        setQueryObject(prev => ({ ...prev, queryString }));
+    };
+
+    return (
+        <input
+            className={ styles.quickSearch }
+            placeholder={ placeholder }
+            type={ type }
+            onInput={ inputHandler }
+            onBlur={ e => sortTasks(e.target.value) }
+            onKeyDown={ e => {
+                if (e.key === 'Enter') sortTasks(e.target.value);
+            } }
+        />
+    );
 });
 
 export default QuickSearch;

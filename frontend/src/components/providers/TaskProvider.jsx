@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 
 import { SelectedTaskIdsContext } from "./SelectedTaskIdsProvider";
 import { ModalModeContext } from "./ModalModeProvider";
 
 export const TaskContext = createContext();
+export const TaskActionsContext = createContext();
 
 const TaskProvider = ({ children }) => {
     const [ taskList, setTaskList ] = useState([]);
@@ -15,6 +16,7 @@ const TaskProvider = ({ children }) => {
         endDate: '',
         endTime: '',
     });
+    const [ queryObject, setQueryObject ] = useState({});
 
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { modalMode } = useContext(ModalModeContext);
@@ -34,8 +36,19 @@ const TaskProvider = ({ children }) => {
         });
     }
 
+    const generateQueryString = params => {
+        const urlParams = new URLSearchParams;
+        console.log(params);
+        Object.entries(params).forEach(([ key, value ]) => {
+            if (value != null) urlParams.append(key, value);
+        });
+        return urlParams.toString();
+    };
+
     const getTasks = () => {
-        fetch('http://localhost:5000/tasks', {
+        const queryString = generateQueryString({ ...queryObject });
+        console.log(queryString);
+        fetch(`http://localhost:5000/tasks?queryString=${ queryString }`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -44,7 +57,7 @@ const TaskProvider = ({ children }) => {
             return response.json();
         }).then(tasks => setTaskList(tasks));
     };
-    useEffect(() => getTasks(), []);
+    useEffect(() => getTasks(), [ queryObject ]);
 
     const handleSaveTask = () => {
         const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
@@ -151,17 +164,27 @@ const TaskProvider = ({ children }) => {
         if (modalMode.type === "edit") populateTaskData();
     }, [ modalMode ]);
 
+    const taskContextValue = useMemo(() => ({
+        getTasks,
+        deleteTask,
+        createTask,
+        handleSaveTask,
+        resetForm,
+        taskList,
+        setTaskList,
+    }), [ taskList, deleteTask ]);
+
+    const taskActionsValue = useMemo(() => ({
+        taskData,
+        setTaskData,
+        setQueryObject,
+    }), [ taskData ]);
+
     return (
-        <TaskContext.Provider value={ {
-            deleteTask,
-            createTask,
-            handleSaveTask,
-            resetForm,
-            taskList,
-            setTaskList,
-            taskData,
-            setTaskData
-        } }>{ children }
+        <TaskContext.Provider value={ taskContextValue }>
+            <TaskActionsContext.Provider value={ taskActionsValue }>
+                { children }
+            </TaskActionsContext.Provider>
         </TaskContext.Provider>
     );
 };
