@@ -1,11 +1,16 @@
 .navContainer {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: #77b6ab;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
 
-    margin-bottom: 30px;
+    padding-bottom: 30px;
 }
 
 .title {

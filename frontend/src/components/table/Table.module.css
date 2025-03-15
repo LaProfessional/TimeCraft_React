@@ -1,22 +1,13 @@
 .tableContainer {
-    overflow: hidden;
     overflow-x: auto;
     margin-bottom: 30px;
 }
 
-.table {
+.tableHeaderContainer {
     min-width: 1200px;
-
-    border-radius: 12px 12px 0 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-bottom: 1px solid #f2f8f4;
-    border-left: 1px solid #f2f8f4;
 }
 
 .tableHeaderRow {
-    position: sticky;
-    top: 0;
-
     border-radius: 12px 12px 0 0;
     background-color: #f2f8f4;
 }
@@ -36,29 +27,33 @@
     padding: 12px;
 }
 
-.tableBody {
-    max-height: 690px;
+.tableBodyContainer {
     overflow-y: auto;
+    max-height: 645px;
+    min-width: 1200px;
+
+    border-bottom: 1px solid #f2f8f4;
+    border-left: 1px solid #f2f8f4;
 }
 
 .tableContainer::-webkit-scrollbar,
-.tableBody::-webkit-scrollbar {
+.tableBodyContainer::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
 .tableContainer::-webkit-scrollbar-thumb,
-.tableBody::-webkit-scrollbar-thumb {
+.tableBodyContainer::-webkit-scrollbar-thumb {
     background-color: #77b6ab;
     border: 2px solid #f2f8f4;
     border-radius: 12px;
     transition: background 0.3s ease;
 }
 .tableContainer::-webkit-scrollbar-thumb:hover,
-.tableBody::-webkit-scrollbar-thumb:hover {
+.tableBodyContainer::-webkit-scrollbar-thumb:hover {
     background-color: #5e9c8b;
 }
 .tableContainer::-webkit-scrollbar-track,
-.tableBody::-webkit-scrollbar-track {
+.tableBodyContainer::-webkit-scrollbar-track {
     background: #f2f8f4;
 }
 

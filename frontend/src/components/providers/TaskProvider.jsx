@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useRef } from 'react';
 
 import { SelectedTaskIdsContext } from "./SelectedTaskIdsProvider";
 import { ModalModeContext } from "./ModalModeProvider";
@@ -18,6 +18,8 @@ const TaskProvider = ({ children }) => {
     });
     const [ queryObject, setQueryObject ] = useState({});
     let [ portionLength, setPortionLength ] = useState(0);
+
+    const prevQueryObject = useRef(queryObject);
 
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { modalMode } = useContext(ModalModeContext);
@@ -50,7 +52,9 @@ const TaskProvider = ({ children }) => {
         const queryString = generateQueryString(queryObject);
         portionLength = taskList.length;
 
-        fetch(`http://localhost:5000/tasks?${ queryString }&portionLength=${ portionLength }`, {
+        const isSorting = prevQueryObject.current !== queryObject;
+
+        fetch(`http://localhost:5000/tasks?${ queryString }&portionLength=${ isSorting ? 0 : portionLength }`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -58,13 +62,11 @@ const TaskProvider = ({ children }) => {
         }).then(response => {
             return response.json();
         }).then(tasksRes => {
-            const {
-                tasks,
-                portionLength,
-            } = tasksRes;
-
+            const { tasks, portionLength } = tasksRes;
             setPortionLength(portionLength);
-            setTaskList(prevTasks => ([ ...prevTasks, ...tasks ]));
+            setTaskList(prevTasks => ( isSorting ? [...tasks] : [ ...prevTasks, ...tasks ]));
+
+            prevQueryObject.current = queryObject;
         });
     };
     useEffect(() => getTasks(), [ queryObject ]);

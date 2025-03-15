@@ -47,7 +47,7 @@ const Table = () => {
                     getTasks();
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.1 });
 
         if (lastTask.current) observer.observe(lastTask.current);
         if (parseInt(portionLength) === taskList.length) observer.disconnect();
@@ -55,7 +55,7 @@ const Table = () => {
 
     return (
         <div className={ styles.tableContainer }>
-            <div className={ styles.table }>
+            <div className={ styles.tableHeaderContainer }>
                 <div className={ styles.tableHeaderRow }>
                     <div className={ styles.tableHeaderCell }>
                         <input
@@ -70,26 +70,30 @@ const Table = () => {
                     <div className={ styles.tableHeaderCell }>Дата начала</div>
                     <div className={ styles.tableHeaderCell }>Дата окончания</div>
                 </div>
+            </div>
 
+            <div className={ styles.tableBodyContainer }>
                 { taskList.map((task, index) => {
                     const { id, title, description, startDatetime, endDatetime } = task;
 
                     return (
-                        <div className={ styles.tableBody } key={ id }>
-                            <div className={ styles.tableRow } ref={ index === taskList.length - 1 ? lastTask : null }>
-                                <div className={ styles.tableCell }>
-                                    <input
-                                        className={ styles.checkbox }
-                                        type='checkbox'
-                                        onChange={ () => selectedTask(id) }
-                                        checked={ selectedTaskIds.includes(id) }
-                                    />
-                                </div>
-                                <TaskTableCell id={ id }>{ title }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ description }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ formattedDate(startDatetime) }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ formattedDate(endDatetime) }</TaskTableCell>
+                        <div
+                            className={ styles.tableRow }
+                            ref={ index === taskList.length - 1 ? lastTask : null }
+                            key={ id }
+                        >
+                            <div className={ styles.tableCell }>
+                                <input
+                                    className={ styles.checkbox }
+                                    type='checkbox'
+                                    onChange={ () => selectedTask(id) }
+                                    checked={ selectedTaskIds.includes(id) }
+                                />
                             </div>
+                            <TaskTableCell id={ id }>{ title }</TaskTableCell>
+                            <TaskTableCell id={ id }>{ description }</TaskTableCell>
+                            <TaskTableCell id={ id }>{ formattedDate(startDatetime) }</TaskTableCell>
+                            <TaskTableCell id={ id }>{ formattedDate(endDatetime) }</TaskTableCell>
                         </div>
                     );
                 }) }

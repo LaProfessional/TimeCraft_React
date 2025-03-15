@@ -38,13 +38,16 @@ app.get('/tasks', async (req, response) => {
                    end_datetime
             FROM tasks
             WHERE (title ILIKE $1 OR description ILIKE $1)
-            ;`;
+            LIMIT $2
+            OFFSET $3
+        ;`;
 
-        const searchResults = await pool.query(queryString, [ `%${ search }%` ]);
+        const searchResults = await pool.query(queryString, [ `%${ search }%`, limit, portionLength ]);
         const tasks = searchResults.rows;
+
         const res = tasks.map(task => convertToCamelCase(task));
 
-        return response.status(200).json(res);
+        return response.status(200).json({ tasks: res, portionLength: portionLength });
     }
 
     if (field || order) {
@@ -57,13 +60,15 @@ app.get('/tasks', async (req, response) => {
                    end_datetime
             FROM tasks
             ORDER BY ${ field } ${ order }
-            ;`;
+            LIMIT $1
+            OFFSET $2
+        ;`;
 
-        const sortedValues = await pool.query(querySort);
+        const sortedValues = await pool.query(querySort, [ limit, portionLength ]);
         const tasks = sortedValues.rows;
         const res = tasks.map(task => convertToCamelCase(task));
 
-        return response.status(200).json(res);
+        return response.status(200).json({ tasks: res, portionLength: portionLength });
     }
 
     const getTasks = `

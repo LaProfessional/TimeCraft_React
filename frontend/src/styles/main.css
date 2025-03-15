@@ -7,6 +7,9 @@
 body {
     background-color: #77b6ab;
 
+    overflow-y: auto;
+    overflow-x: hidden;
+
     padding: 20px;
     margin: 0;
 }

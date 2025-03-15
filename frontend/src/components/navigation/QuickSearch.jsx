@@ -28,7 +28,10 @@ const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }
             placeholder={ placeholder }
             type={ type }
             onInput={ inputHandler }
-            onBlur={ e => sortTasks(e.target.value) }
+            onBlur={ e => {
+                if (!e.target.value) return;
+                sortTasks(e.target.value);
+            } }
             onKeyDown={ e => {
                 if (e.key === 'Enter') sortTasks(e.target.value);
             } }
