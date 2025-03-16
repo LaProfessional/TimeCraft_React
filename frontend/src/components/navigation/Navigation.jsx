@@ -1,6 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from "react";
 
-import Button from './Button';
+import Button from "./Button";
 import QuickSearch from "./QuickSearch";
 import TasksSortOptions from "./TasksSortOptions";
 import ModalWindow from "../modalWindows/ModalWindow";
@@ -15,7 +15,7 @@ import styles from './Navigation.module.css';
 
 const Navigation = () => {
     const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
-    const { resetForm, deleteTask } = useContext(TaskContext);
+    const { resetForm, deleteTask, tasksCount, taskList } = useContext(TaskContext);
     const { modalMode, setModalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
 
     const memoizedTaskCreationForm = useMemo(() => {
@@ -31,7 +31,7 @@ const Navigation = () => {
             <ModalWindow>{ memoizedTaskCreationForm }</ModalWindow>
 
             <nav className={ styles.navContainer }>
-                <h2 className={ styles.title }>Задачи N</h2>
+                <h2 className={ styles.title }>Задачи: { taskList.length ? tasksCount : 0 }</h2>
                 <div className={ styles.leftNavContainer }>
 
                     <Button type="primary" onClick={ () => {

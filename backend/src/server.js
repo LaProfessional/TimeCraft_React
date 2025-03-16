@@ -28,6 +28,20 @@ app.get('/tasks', async (req, response) => {
     } = req.query;
     const limit = 20;
 
+    const getTasksCount = async () => {
+        let countQuery = `SELECT COUNT(*)
+                          FROM tasks`;
+        let queryParams = [];
+
+        if (search) {
+            countQuery += ` WHERE (title ILIKE $1 OR description ILIKE $1)`;
+            queryParams.push(`%${ search }%`);
+        }
+
+        const countRes = await pool.query(countQuery, queryParams);
+        return countRes.rows[0].count;
+    };
+
     if (search) {
         const queryString = `
             SELECT id,
@@ -38,18 +52,18 @@ app.get('/tasks', async (req, response) => {
                    end_datetime
             FROM tasks
             WHERE (title ILIKE $1 OR description ILIKE $1)
-            LIMIT $2
+                LIMIT $2
             OFFSET $3
-        ;`;
+            ;`;
+
+        const tasksCount = await getTasksCount();
 
         const searchResults = await pool.query(queryString, [ `%${ search }%`, limit, portionLength ]);
         const tasks = searchResults.rows;
-
         const res = tasks.map(task => convertToCamelCase(task));
 
-        return response.status(200).json({ tasks: res, portionLength: portionLength });
+        return response.status(200).json({ tasks: res, portionLength: portionLength, tasksCount: tasksCount });
     }
-
     if (field || order) {
         const querySort = `
             SELECT id,
@@ -62,13 +76,15 @@ app.get('/tasks', async (req, response) => {
             ORDER BY ${ field } ${ order }
             LIMIT $1
             OFFSET $2
-        ;`;
+            ;`;
+
+        const tasksCount = await getTasksCount();
 
         const sortedValues = await pool.query(querySort, [ limit, portionLength ]);
         const tasks = sortedValues.rows;
         const res = tasks.map(task => convertToCamelCase(task));
 
-        return response.status(200).json({ tasks: res, portionLength: portionLength });
+        return response.status(200).json({ tasks: res, portionLength: portionLength, tasksCount: tasksCount });
     }
 
     const getTasks = `
@@ -82,11 +98,13 @@ app.get('/tasks', async (req, response) => {
         OFFSET $2
         ;`;
 
+    const tasksCount = await getTasksCount();
+
     const getTasksRes = await pool.query(getTasks, [ limit, portionLength ]);
     const tasks = getTasksRes.rows;
-
     const res = tasks.map(task => convertToCamelCase(task));
-    response.status(200).json({ tasks: res, portionLength: portionLength });
+
+    response.status(200).json({ tasks: res, portionLength: portionLength, tasksCount: tasksCount });
 });
 
 app.post('/tasks', async (req, response) => {
@@ -162,16 +180,23 @@ app.put('/tasks', async (req, response) => {
 });
 
 app.delete('/tasks', async (req, response) => {
-    const selectedTaskIds = req.body.selectedTaskIds;
-    const numericIds = selectedTaskIds.map(taskId => parseInt(taskId));
+    const { selectedTaskIds, isDeleteAllTasks } = req.body;
 
-    const query = `
-        DELETE
-        FROM tasks
-        WHERE id = ANY ($1)
-        ;`;
+    let query;
+    let params;
 
-    await pool.query(query, [ numericIds ]);
+    if (isDeleteAllTasks) {
+        query = `DELETE FROM tasks;`;
+        params = [];
+    } else {
+        const numericIds = selectedTaskIds.map(taskId => parseInt(taskId));
+        query = `DELETE
+                 FROM tasks
+                 WHERE id = ANY ($1);`;
+        params = [ numericIds ];
+    }
+
+    await pool.query(query, params);
     response.sendStatus(200);
 });
 

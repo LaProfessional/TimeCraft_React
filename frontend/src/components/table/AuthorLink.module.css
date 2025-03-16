@@ -1,0 +1,19 @@
+.authorWrapper {
+    text-align: center;
+}
+
+.authorLink {
+    background-image: linear-gradient(to right, #201e1e, #494848);
+    background-repeat: no-repeat;
+    background-size: 0 1px;
+    background-position: left bottom;
+
+    font-size: 12px;
+    text-decoration: none;
+    padding-bottom: 2px;
+    transition: 0.2s linear;
+}
+.authorLink:hover {
+    color: #494848FF;
+    background-size: 100% 1px;
+}

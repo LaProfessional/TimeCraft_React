@@ -1,11 +1,13 @@
 import React, { useContext } from 'react';
 
 import { TaskActionsContext } from "../providers/TaskProvider";
+import { TaskContext } from "../providers/TaskProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
 const TaskCreationForm = () => {
     const { taskData, setTaskData } = useContext(TaskActionsContext);
+    const { errors  } = useContext(TaskContext);
     const {
         title,
         description,
@@ -56,11 +58,12 @@ const TaskCreationForm = () => {
             <div className={ styles.inputGroup }>
                 <label className={ styles.blockTitle } htmlFor="title">Название задачи:</label>
                 <input
-                    className={ styles.input }
+                    className={ `${ styles.input }` }
                     type="text" placeholder="Задача"
                     id="title"
                     value={ title }
                     onChange={ handleChangeInput }
+                    required={ errors.title }
                 />
             </div>
 
@@ -87,6 +90,7 @@ const TaskCreationForm = () => {
                         value={ startDate }
                         onChange={ handleChangeInput }
                         onBlur={ e => handleChangeDate('startDate', e) }
+                        required={ errors.startDate }
                     />
                     <input
                         className={ styles.inputDatetime }
@@ -94,6 +98,7 @@ const TaskCreationForm = () => {
                         id="startTime"
                         value={ startTime }
                         onChange={ handleChangeInput }
+                        required={ errors.startTime }
                     />
                 </div>
             </div>
@@ -109,6 +114,7 @@ const TaskCreationForm = () => {
                         value={ endDate }
                         onChange={ handleChangeInput }
                         onBlur={ e => handleChangeDate('endDate', e) }
+                        required={ errors.endDate }
                     />
                     <input
                         className={ styles.inputDatetime }
@@ -116,6 +122,7 @@ const TaskCreationForm = () => {
                         id="endTime"
                         value={ endTime }
                         onChange={ handleChangeInput }
+                        required={ errors.endTime }
                     />
                 </div>
             </div>

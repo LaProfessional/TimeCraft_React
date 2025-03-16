@@ -16,7 +16,12 @@ const TaskProvider = ({ children }) => {
         endDate: '',
         endTime: '',
     });
+    const [ errors, setErrors ] = useState({});
+
     const [ queryObject, setQueryObject ] = useState({});
+    const [ tasksCount, setTasksCount ] = useState(0);
+    const [ isDeleteAllTasks, setIsDeleteAllTasks ] = useState(false);
+
     let [ portionLength, setPortionLength ] = useState(0);
 
     const prevQueryObject = useRef(queryObject);
@@ -30,11 +35,16 @@ const TaskProvider = ({ children }) => {
             headers: {
                 'Content-type': 'application/json'
             },
-            body: JSON.stringify({ selectedTaskIds }),
+            body: JSON.stringify({ selectedTaskIds, isDeleteAllTasks }),
         }).then(() => {
-            setTaskList(prevTaskList =>
-                prevTaskList.filter(task => !selectedTaskIds.includes(task.id))
-            );
+            if (isDeleteAllTasks) {
+                setTaskList([]);
+                setTasksCount(0);
+            } else {
+                setTaskList(prevTaskList =>
+                    prevTaskList.filter(task => !selectedTaskIds.includes(task.id))
+                );
+            }
             setSelectedTaskIds([]);
         });
     };
@@ -62,20 +72,33 @@ const TaskProvider = ({ children }) => {
         }).then(response => {
             return response.json();
         }).then(tasksRes => {
-            const { tasks, portionLength } = tasksRes;
+            const { tasks, portionLength, tasksCount } = tasksRes;
+
+            setTasksCount(tasksCount);
             setPortionLength(portionLength);
-            setTaskList(prevTasks => ( isSorting ? [...tasks] : [ ...prevTasks, ...tasks ]));
+            setTaskList(prevTasks => (isSorting ? [ ...tasks ] : [ ...prevTasks, ...tasks ]));
 
             prevQueryObject.current = queryObject;
         });
     };
     useEffect(() => getTasks(), [ queryObject ]);
 
+    const validateInputs = () => {
+        let newErrors = {};
+        for (const key in taskData) {
+            if (!taskData[key] && key !== "description") newErrors[key] = true;
+        }
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length;
+    };
+
     const handleSaveTask = () => {
+        const isInvalid = validateInputs();
+        if (isInvalid) return isInvalid;
+
         const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();
-        const endDatetime = taskData.endDate && taskData.endTime
-            ? new Date(`${ taskData.endDate } ${ taskData.endTime }`).toISOString()
-            : null;
+        const endDatetime = new Date(`${ taskData.endDate } ${ taskData.endTime }`).toISOString();
 
         const task = {
             title: taskData.title,
@@ -184,13 +207,17 @@ const TaskProvider = ({ children }) => {
         resetForm,
         taskList,
         setTaskList,
-        portionLength
+        portionLength,
+        tasksCount,
+        errors,
+        setErrors,
     }), [ taskList, deleteTask ]);
 
     const taskActionsValue = useMemo(() => ({
         taskData,
         setTaskData,
         setQueryObject,
+        setIsDeleteAllTasks,
     }), [ taskData ]);
 
     return (

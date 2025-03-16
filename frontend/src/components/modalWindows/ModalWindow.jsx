@@ -7,17 +7,26 @@ import styles from './ModalWindow.module.css';
 
 const ModalWindow = React.memo(({ children }) => {
     const { modalMode, setModalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
-    const { handleSaveTask } = useContext(TaskContext);
+    const { handleSaveTask, setErrors } = useContext(TaskContext);
 
-    const {
-        title,
-        buttonText,
-        type,
-    } = modalMode;
+    const { title, buttonText, type } = modalMode;
 
     const closeModalWindow = e => {
-        if (e.target === e.currentTarget) setIsModalOpen(false);
-    }
+        if (e.target === e.currentTarget) {
+            setErrors({});
+            setIsModalOpen(false);
+        }
+    };
+
+    const handleSaveOrEditButton = e => {
+        if (type === "view") {
+            setModalMode("edit");
+        } else {
+            const isInvalid = handleSaveTask();
+            if (isInvalid) return;
+            closeModalWindow(e);
+        }
+    };
 
     return (
         <div
@@ -40,15 +49,7 @@ const ModalWindow = React.memo(({ children }) => {
                 <footer className={ styles.footer }>
                     <button
                         className={ `${ styles.btn } ${ styles.btnSave }` }
-                        onClick={ e => {
-                            if (type === "view") {
-                                setModalMode("edit");
-                            } else {
-                                handleSaveTask();
-                                e.stopPropagation();
-                                closeModalWindow(e);
-                            }
-                        } }
+                        onClick={ handleSaveOrEditButton }
                     >{ buttonText }</button>
 
                     <button

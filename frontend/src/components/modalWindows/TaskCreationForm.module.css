@@ -68,6 +68,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.inputDatetime:required,
+.input:required {
+    border: 1px solid #ff0000;
+}
+
 /* TASK VIEW */
 .contentGroup {
     margin-bottom: 15px;
