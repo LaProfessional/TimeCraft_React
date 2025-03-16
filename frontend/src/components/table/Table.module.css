@@ -62,12 +62,14 @@
 }
 
 .tableCell {
-    display: flex;
-    align-items: center;
+    display: -webkit-box;
     height: 50px;
 
-    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     border-right: 1px solid #f2f8f4;
     padding: 5px;

@@ -31,7 +31,7 @@ const ModalWindow = React.memo(({ children }) => {
     return (
         <div
             className={ `${ styles.overlay } ${ isModalOpen ? styles.active : '' }` }
-            onClick={ e => closeModalWindow(e) }
+            onMouseDown={ closeModalWindow }
         >
             <div className={ `${ styles.container } ${ isModalOpen ? styles.slidingModalWindow : '' }` }>
                 <div className={ styles.headerContainer }>

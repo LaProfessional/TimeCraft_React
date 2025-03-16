@@ -1,13 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import { TaskActionsContext } from "../providers/TaskProvider";
 import { TaskContext } from "../providers/TaskProvider";
+import { ModalModeContext } from "../providers/ModalModeProvider";
 
 import styles from "./TaskCreationForm.module.css";
 
 const TaskCreationForm = () => {
+    const inputRef = useRef(null);
+
     const { taskData, setTaskData } = useContext(TaskActionsContext);
-    const { errors  } = useContext(TaskContext);
+    const { errors } = useContext(TaskContext);
+    const { isModalOpen } = useContext(ModalModeContext);
+
     const {
         title,
         description,
@@ -16,6 +21,12 @@ const TaskCreationForm = () => {
         endDate,
         endTime,
     } = taskData;
+
+    useEffect(() => {
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 100);
+    }, [ isModalOpen ]);
 
     const handleChangeDate = (inputId, e) => {
         const currentYear = parseInt(e.target.value.slice(0, 4));
@@ -64,6 +75,7 @@ const TaskCreationForm = () => {
                     value={ title }
                     onChange={ handleChangeInput }
                     required={ errors.title }
+                    ref={ inputRef }
                 />
             </div>
 

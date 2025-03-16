@@ -3,9 +3,9 @@ import React, { useContext, useMemo } from "react";
 import Button from "./Button";
 import QuickSearch from "./QuickSearch";
 import TasksSortOptions from "./TasksSortOptions";
-import ModalWindow from "../modalWindows/ModalWindow";
-import TaskCreationForm from "../modalWindows/TaskCreationForm";
-import TaskView from "../modalWindows/TaskView";
+import ModalWindow from "../modalWindow/ModalWindow";
+import TaskCreationForm from "../modalWindow/TaskCreationForm";
+import TaskView from "../modalWindow/TaskView";
 
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 import { TaskContext } from "../providers/TaskProvider";
