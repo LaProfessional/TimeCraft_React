@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 
+import Overlay from "./Overlay";
+
 import { ModalModeContext } from "../providers/ModalModeProvider";
 import { TaskContext } from "../providers/TaskProvider";
 
@@ -29,10 +31,7 @@ const ModalWindow = React.memo(({ children }) => {
     };
 
     return (
-        <div
-            className={ `${ styles.overlay } ${ isModalOpen ? styles.active : '' }` }
-            onMouseDown={ closeModalWindow }
-        >
+        <Overlay onMouseDown={ closeModalWindow } isModalOpen={ isModalOpen }>
             <div className={ `${ styles.container } ${ isModalOpen ? styles.slidingModalWindow : '' }` }>
                 <div className={ styles.headerContainer }>
                     <h2 className={ styles.title }>{ title }</h2>
@@ -62,7 +61,7 @@ const ModalWindow = React.memo(({ children }) => {
                     </button>
                 </footer>
             </div>
-        </div>
+        </Overlay>
     );
 });
 

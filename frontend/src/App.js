@@ -18,8 +18,8 @@ const App = () => {
 
     return (
         <>
-            { !isAuthenticated ? (<RegistrationPage setIsAuthenticated={ setIsAuthenticated }/>) : (
-                <ModalModeProvider>
+            <ModalModeProvider>
+                { !isAuthenticated ? (<RegistrationPage setIsAuthenticated={ setIsAuthenticated }/>) : (
                     <SelectedTaskIdsProvider>
                         <TaskProvider>
                             <Header/>
@@ -27,8 +27,8 @@ const App = () => {
                             <Table/>
                         </TaskProvider>
                     </SelectedTaskIdsProvider>
-                </ModalModeProvider>
-            ) }
+                ) }
+            </ModalModeProvider>
         </>
     );
 };

@@ -34,6 +34,20 @@ const ModalModeProvider = ({ children }) => {
                     type: "view",
                 });
                 break;
+            case "registration":
+                setModalMode({
+                    title: "Регистрация",
+                    buttonText: "Зарегистрироваться",
+                    type: "registration",
+                });
+                break;
+            case "login":
+                setModalMode({
+                    title: "Вход",
+                    buttonText: "Войти",
+                    type: "login",
+                });
+                break;
             default:
         }
     }, [ modalMode ]);

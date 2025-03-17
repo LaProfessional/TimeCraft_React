@@ -1,28 +1,28 @@
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
+/*.overlay {*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    right: 0;*/
+/*    bottom: 0;*/
+/*    background: rgba(0, 0, 0, 0.7);*/
+/*    z-index: 1000;*/
 
-    transition: all .3s ease-in-out;
-    visibility: hidden;
-    opacity: 0;
+/*    transition: all .3s ease-in-out;*/
+/*    visibility: hidden;*/
+/*    opacity: 0;*/
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
 
-    padding: 10px;
-}
+/*    padding: 10px;*/
+/*}*/
 
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
-    transition: all .3s ease-in-out;
-}
+/*.overlay.active {*/
+/*    opacity: 1;*/
+/*    visibility: visible;*/
+/*    transition: all .3s ease-in-out;*/
+/*}*/
 
 .container {
     display: grid;

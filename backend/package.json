@@ -8,10 +8,12 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "cookie-parser": "^1.4.7",
+    "bcrypt": "^5.1.1",
     "express": "^4.21.2",
     "pg": "^8.13.3",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
