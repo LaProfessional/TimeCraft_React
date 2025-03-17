@@ -13,8 +13,8 @@ const ModalWindow = React.memo(({ children }) => {
 
     const closeModalWindow = e => {
         if (e.target === e.currentTarget) {
-            setErrors({});
             setIsModalOpen(false);
+            setErrors({});
         }
     };
 

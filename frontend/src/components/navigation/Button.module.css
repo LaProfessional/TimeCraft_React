@@ -58,3 +58,7 @@
     transform: none;
     opacity: 1;
 }
+
+.button.login {
+    width: 100%;
+}

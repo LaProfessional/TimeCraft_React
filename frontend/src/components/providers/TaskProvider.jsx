@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useMemo, useRef } from 'react';
 
+import useValidation from "../../hooks/useValidation";
+
 import { SelectedTaskIdsContext } from "./SelectedTaskIdsProvider";
 import { ModalModeContext } from "./ModalModeProvider";
 
@@ -16,7 +18,8 @@ const TaskProvider = ({ children }) => {
         endDate: '',
         endTime: '',
     });
-    const [ errors, setErrors ] = useState({});
+
+    const { errors, setErrors, validate } = useValidation();
 
     const [ queryObject, setQueryObject ] = useState({});
     const [ tasksCount, setTasksCount ] = useState(0);
@@ -83,18 +86,8 @@ const TaskProvider = ({ children }) => {
     };
     useEffect(() => getTasks(), [ queryObject ]);
 
-    const validateInputs = () => {
-        let newErrors = {};
-        for (const key in taskData) {
-            if (!taskData[key] && key !== "description") newErrors[key] = true;
-        }
-        setErrors(newErrors);
-
-        return Object.keys(newErrors).length;
-    };
-
     const handleSaveTask = () => {
-        const isInvalid = validateInputs();
+        const isInvalid = validate(taskData, [ "description" ]);
         if (isInvalid) return isInvalid;
 
         const startDatetime = new Date(`${ taskData.startDate } ${ taskData.startTime }`).toISOString();

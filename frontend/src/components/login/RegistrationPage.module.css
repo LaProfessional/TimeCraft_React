@@ -1,0 +1,62 @@
+.registrationWindow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.containerLogin {
+    width: clamp(200px, 100%, 420px);
+
+    border-radius: 10px;
+    background-color: #ddeee7;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+    border: 1px solid #808080;
+}
+
+.header {
+    color: #2b5b4e;
+    border-bottom: 1px solid #000000;
+
+    padding: 5px;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    border-bottom: 1px solid #000000;
+
+    padding: 5px;
+}
+
+.input {
+    width: 100%;
+    height: 35px;
+
+    border: 1px solid #5e9c8b;
+    border-radius: 6px;
+    background-color: #f2fdf9;
+
+    font-size: 14px;
+    color: #2b5b4e;
+
+    transition: border 0.3s ease;
+
+    padding: 5px;
+}
+
+.input:focus {
+    border-color: #8cd69b;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input:required {
+    border: 1px solid #ff0000;
+}
+
+.signInBtnContainer {
+    padding: 10px;
+}

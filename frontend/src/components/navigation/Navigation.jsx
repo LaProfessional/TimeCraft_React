@@ -10,6 +10,7 @@ import TaskView from "../modalWindow/TaskView";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
 import { TaskContext } from "../providers/TaskProvider";
 import { ModalModeContext } from "../providers/ModalModeProvider";
+import { AuthenticatedContext } from "../providers/AuthenticatedProvider";
 
 import styles from './Navigation.module.css';
 
@@ -17,6 +18,7 @@ const Navigation = () => {
     const { selectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { resetForm, deleteTask, tasksCount, taskList } = useContext(TaskContext);
     const { modalMode, setModalMode, isModalOpen, setIsModalOpen } = useContext(ModalModeContext);
+    const { setIsAuthenticated } = useContext(AuthenticatedContext);
 
     const memoizedTaskCreationForm = useMemo(() => {
         if (modalMode.type === "view") {
@@ -62,7 +64,7 @@ const Navigation = () => {
                     </div>
                 </div>
                 <div className={ styles.rightNavContainer }>
-                    <Button type="danger">Выйти</Button>
+                    <Button type="danger" onClick={ () => setIsAuthenticated(false) }>Выйти</Button>
                 </div>
             </nav>
         </>
