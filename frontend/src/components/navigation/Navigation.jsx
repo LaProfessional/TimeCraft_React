@@ -64,7 +64,10 @@ const Navigation = () => {
                     </div>
                 </div>
                 <div className={ styles.rightNavContainer }>
-                    <Button type="danger" onClick={ () => setIsAuthenticated(false) }>Выйти</Button>
+                    <Button type="danger" onClick={ () => {
+                        localStorage.removeItem("userToken");
+                        setIsAuthenticated(false);
+                    } }>Выйти</Button>
                 </div>
             </nav>
         </>

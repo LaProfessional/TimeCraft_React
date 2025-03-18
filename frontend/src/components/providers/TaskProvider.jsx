@@ -34,13 +34,16 @@ const TaskProvider = ({ children }) => {
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { modalMode } = useContext(ModalModeContext);
 
+    const token = localStorage.getItem("userToken");
+
     const deleteTask = () => {
         fetch(`${ url }/tasks`, {
             method: 'DELETE',
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${ token }`,
             },
-            body: JSON.stringify({ selectedTaskIds, isDeleteAllTasks }),
+            body: JSON.stringify({ selectedTaskIds, isDeleteAllTasks, token }),
         }).then(() => {
             if (isDeleteAllTasks) {
                 setTaskList([]);
@@ -73,6 +76,7 @@ const TaskProvider = ({ children }) => {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
+                'Authorization': `Bearer ${ token }`,
             },
         }).then(response => {
             return response.json();
@@ -87,6 +91,7 @@ const TaskProvider = ({ children }) => {
         });
     };
     useEffect(() => getTasks(), [ queryObject ]);
+
 
     const handleSaveTask = () => {
         const isInvalid = validate(taskData, [ "description" ]);
@@ -114,6 +119,7 @@ const TaskProvider = ({ children }) => {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
+                'Authorization': `Bearer ${ token }`,
             },
             body: JSON.stringify({ task }),
 
@@ -131,6 +137,7 @@ const TaskProvider = ({ children }) => {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
+                'Authorization': `Bearer ${ token }`,
             },
             body: JSON.stringify({ task }),
 

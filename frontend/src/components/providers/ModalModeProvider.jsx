@@ -38,6 +38,7 @@ const ModalModeProvider = ({ children }) => {
                 setModalMode({
                     title: "Регистрация",
                     buttonText: "Зарегистрироваться",
+                    errorMessageUser: "Такой пользователь уже существует",
                     type: "registration",
                 });
                 break;
@@ -45,6 +46,7 @@ const ModalModeProvider = ({ children }) => {
                 setModalMode({
                     title: "Вход",
                     buttonText: "Войти",
+                    errorMessageUser: "Неверное имя пользователя",
                     type: "login",
                 });
                 break;

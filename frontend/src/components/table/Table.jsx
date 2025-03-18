@@ -5,6 +5,7 @@ import AuthorLink from "./AuthorLink";
 import { TaskContext } from "../providers/TaskProvider";
 import { TaskActionsContext } from "../providers/TaskProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
+import { LoadingStatusContext } from "../providers/LoadingStatusProvider";
 
 import styles from './Table.module.css';
 
@@ -12,6 +13,7 @@ const Table = () => {
     const { taskList, getTasks, portionLength } = useContext(TaskContext);
     const { setIsDeleteAllTasks } = useContext(TaskActionsContext);
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+    const { isMounted, setIsMounted } = useContext(LoadingStatusContext);
 
     const lastTask = useRef(null);
 
@@ -105,7 +107,8 @@ const Table = () => {
                     }) }
                 </div>
             </div>
-            <h2 className={ `${ styles.noTasksMessage } ${ taskList.length ? styles.hidden : '' }` }>Задачи не найдены</h2>
+            <h2 className={ `${ styles.noTasksMessage } ${ taskList.length ? styles.hidden : '' }` }>Задачи не
+                найдены</h2>
             <AuthorLink>Created by: TopTTeDHbIu-DeJLbFuH4uk</AuthorLink>
         </>
     );

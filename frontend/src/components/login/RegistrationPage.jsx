@@ -5,6 +5,7 @@ import Overlay from "../modalWindow/Overlay";
 import useValidation from "../../hooks/useValidation";
 
 import { ModalModeContext } from "../providers/ModalModeProvider";
+import { LoadingStatusContext } from "../providers/LoadingStatusProvider";
 import { url } from "../../constants";
 
 import styles from "./RegistrationPage.module.css";
@@ -20,8 +21,10 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
     });
 
     const { errors, setErrors, validate } = useValidation();
+
+    const { isMounted, setIsMounted } = useContext(LoadingStatusContext);
     const { isModalOpen, setIsModalOpen, modalMode, setModalMode } = useContext(ModalModeContext);
-    const { title, buttonText, type } = modalMode;
+    const { title, buttonText, errorMessageUser, type } = modalMode;
 
     const login = () => {
         const isInvalidLogin = validate(userData);
@@ -34,22 +37,14 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
             },
             body: JSON.stringify({ userData }),
 
-        }).then((response) => {
-            switch (type) {
-                case "registration":
-                    setIsAuthenticated(true);
-                    setIsModalOpen(false);
-                    break;
-                case "login":
-                    return response.json();
-                default:
-            }
+        }).then(response => {
+            return response.json();
+
         }).then(login => {
             if (login.errorLogin || login.errorPassword) {
-                setLoginError(() => ({
-                    ...login
-                }));
+                setLoginError(() => ({ ...login }));
             } else {
+                localStorage.setItem("userToken", login);
                 setIsAuthenticated(true);
                 setIsModalOpen(false);
             }
@@ -86,6 +81,13 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
         }));
     };
 
+    useEffect(() => {
+        if (localStorage.getItem("userToken")) setIsAuthenticated(true);
+    }, []);
+
+    useEffect(() => setIsMounted(true), []);
+    if (!isMounted) return;
+
     return (
         <>
             <div className={ styles.containerBtnLogin }>
@@ -117,8 +119,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
                                 value={ userData.username }
                                 onChange={ handleChangeInput }
                             />
-                            <p className={ `${ styles.errorLogin } ${ loginError.errorLogin ? '' : styles.hidden }` }>Имя
-                                пользователя не существует</p>
+                            <p className={ `${ styles.errorLogin } ${ loginError.errorLogin ? '' : styles.hidden }` }>{ errorMessageUser }</p>
                         </div>
 
                         <div className={ styles.inputContainer }>
