@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import Button from "../navigation/Button";
 import Overlay from "../modalWindow/Overlay";
 import useValidation from "../../hooks/useValidation";
 
 import { ModalModeContext } from "../providers/ModalModeProvider";
+import { url } from "../../constants";
 
 import styles from "./RegistrationPage.module.css";
 
@@ -13,6 +14,11 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
         username: '',
         password: '',
     });
+    const [ loginError, setLoginError ] = useState({
+        errorLogin: '',
+        errorPassword: '',
+    });
+
     const { errors, setErrors, validate } = useValidation();
     const { isModalOpen, setIsModalOpen, modalMode, setModalMode } = useContext(ModalModeContext);
     const { title, buttonText, type } = modalMode;
@@ -21,15 +27,49 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
         const isInvalidLogin = validate(userData);
         if (isInvalidLogin) return;
 
-        fetch('http://localhost:5000/auth/register', {
+        fetch(`${ url }/auth/${ type }`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({ userData }),
 
-        }).then()
+        }).then((response) => {
+            switch (type) {
+                case "registration":
+                    setIsAuthenticated(true);
+                    setIsModalOpen(false);
+                    break;
+                case "login":
+                    return response.json();
+                default:
+            }
+        }).then(login => {
+            if (login.errorLogin || login.errorPassword) {
+                setLoginError(() => ({
+                    ...login
+                }));
+            } else {
+                setIsAuthenticated(true);
+                setIsModalOpen(false);
+            }
+        });
     };
+
+    const resetForm = () => {
+        setDataUser({
+            username: '',
+            password: '',
+        });
+        setLoginError({
+            errorLogin: '',
+            errorPassword: '',
+        });
+    };
+
+    useEffect(() => {
+        if (isModalOpen) resetForm();
+    }, [ isModalOpen ]);
 
     const closeModalWindow = e => {
         if (e.target === e.currentTarget) {
@@ -67,24 +107,33 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
                         className={ styles.loginForm }
                         onKeyUp={ e => e.key === 'Enter' ? login() : '' }
                     >
-                        <input
-                            className={ styles.input }
-                            type="text"
-                            placeholder="Имя пользователя"
-                            id="username"
-                            required={ errors.username }
-                            value={ userData.username }
-                            onChange={ handleChangeInput }
-                        />
-                        <input
-                            className={ styles.input }
-                            type="text"
-                            placeholder="Пароль"
-                            id="password"
-                            required={ errors.password }
-                            value={ userData.password }
-                            onChange={ handleChangeInput }
-                        />
+                        <div className={ styles.inputContainer }>
+                            <input
+                                className={ styles.input }
+                                type="text"
+                                placeholder="Имя пользователя"
+                                id="username"
+                                required={ errors.username }
+                                value={ userData.username }
+                                onChange={ handleChangeInput }
+                            />
+                            <p className={ `${ styles.errorLogin } ${ loginError.errorLogin ? '' : styles.hidden }` }>Имя
+                                пользователя не существует</p>
+                        </div>
+
+                        <div className={ styles.inputContainer }>
+                            <input
+                                className={ styles.input }
+                                type="text"
+                                placeholder="Пароль"
+                                id="password"
+                                required={ errors.password }
+                                value={ userData.password }
+                                onChange={ handleChangeInput }
+                            />
+                            <p className={ `${ styles.errorPassword } ${ loginError.errorPassword ? '' : styles.hidden }` }>Неверный
+                                пароль</p>
+                        </div>
                     </form>
                     <div className={ styles.signInBtnContainer }>
                         <Button type="login" onClick={ login }>{ buttonText }</Button>

@@ -5,6 +5,8 @@ import useValidation from "../../hooks/useValidation";
 import { SelectedTaskIdsContext } from "./SelectedTaskIdsProvider";
 import { ModalModeContext } from "./ModalModeProvider";
 
+import { url } from "../../constants";
+
 export const TaskContext = createContext();
 export const TaskActionsContext = createContext();
 
@@ -33,7 +35,7 @@ const TaskProvider = ({ children }) => {
     const { modalMode } = useContext(ModalModeContext);
 
     const deleteTask = () => {
-        fetch('http://localhost:5000/tasks', {
+        fetch(`${ url }/tasks`, {
             method: 'DELETE',
             headers: {
                 'Content-type': 'application/json'
@@ -67,7 +69,7 @@ const TaskProvider = ({ children }) => {
 
         const isSorting = prevQueryObject.current !== queryObject;
 
-        fetch(`http://localhost:5000/tasks?${ queryString }&portionLength=${ isSorting ? 0 : portionLength }`, {
+        fetch(`${ url }/tasks?${ queryString }&portionLength=${ isSorting ? 0 : portionLength }`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json',
@@ -108,7 +110,7 @@ const TaskProvider = ({ children }) => {
     };
 
     const createTask = task => {
-        fetch('http://localhost:5000/tasks', {
+        fetch(`${ url }/tasks`, {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
@@ -125,7 +127,7 @@ const TaskProvider = ({ children }) => {
     };
 
     const updateTask = (task, taskId) => {
-        fetch(`http://localhost:5000/tasks/?taskId=${ taskId }`, {
+        fetch(`${ url }/tasks/?taskId=${ taskId }`, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',

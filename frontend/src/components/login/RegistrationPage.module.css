@@ -35,7 +35,7 @@
 .loginForm {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
 
     border-bottom: 1px solid #000000;
 
@@ -66,6 +66,18 @@
 
 .input:required {
     border: 1px solid #ff0000;
+}
+
+.errorLogin,
+.errorPassword {
+    font-size: 12px;
+    color: #ff0000;
+    padding-left: 1px;
+}
+
+.errorLogin.hidden,
+.errorPassword.hidden {
+    display: none;
 }
 
 .signInBtnContainer {
