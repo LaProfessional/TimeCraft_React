@@ -106,7 +106,3 @@
     text-align: center;
     margin-bottom: 30px;
 }
-
-.noTasksMessage.hidden {
-    display: none;
-}

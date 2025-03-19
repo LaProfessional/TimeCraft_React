@@ -106,7 +106,7 @@ const Table = () => {
                     }) }
                 </div>
             </div>
-            <h2 className={ `${ styles.noTasksMessage } ${ taskList.length ? styles.hidden : '' }` }>Задачи не найдены</h2>
+            { taskList.length ? '' : <h2 className={ styles.noTasksMessage }>Задачи не найдены</h2> }
             <AuthorLink>Created by: TopTTeDHbIu-DeJLbFuH4uk</AuthorLink>
         </>
     );
