@@ -5,12 +5,15 @@ import AuthorLink from "./AuthorLink";
 import { TaskContext } from "../providers/TaskProvider";
 import { TaskActionsContext } from "../providers/TaskProvider";
 import { SelectedTaskIdsContext } from "../providers/SelectedTaskIdsProvider";
+import { LoadingStatusContext } from "../providers/LoadingStatusProvider";
+
 import styles from './Table.module.css';
 
 const Table = () => {
     const { taskList, getTasks, portionLength } = useContext(TaskContext);
     const { setIsDeleteAllTasks } = useContext(TaskActionsContext);
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
+    const { isLoading } = useContext(LoadingStatusContext);
 
     const lastTask = useRef(null);
 
@@ -79,34 +82,40 @@ const Table = () => {
                     </div>
                 </div>
 
-                <div className={ styles.tableBodyContainer }>
-                    { taskList.map((task, index) => {
-                        const { id, title, description, startDatetime, endDatetime } = task;
+                { isLoading ? (
+                    <h2 className={ styles.message }>Загрузка...</h2>
+                ) : (
+                    <>
+                        <div className={ styles.tableBodyContainer }>
+                            { taskList.map((task, index) => {
+                                const { id, title, description, startDatetime, endDatetime } = task;
 
-                        return (
-                            <div
-                                className={ styles.tableRow }
-                                ref={ index === taskList.length - 1 ? lastTask : null }
-                                key={ id }
-                            >
-                                <div className={ styles.tableCell }>
-                                    <input
-                                        className={ styles.checkbox }
-                                        type='checkbox'
-                                        onChange={ () => selectedTask(id) }
-                                        checked={ selectedTaskIds.includes(id) }
-                                    />
-                                </div>
-                                <TaskTableCell id={ id }>{ title }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ description }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ formattedDate(startDatetime) }</TaskTableCell>
-                                <TaskTableCell id={ id }>{ formattedDate(endDatetime) }</TaskTableCell>
-                            </div>
-                        );
-                    }) }
-                </div>
+                                return (
+                                    <div
+                                        className={ styles.tableRow }
+                                        ref={ index === taskList.length - 1 ? lastTask : null }
+                                        key={ id }
+                                    >
+                                        <div className={ styles.tableCell }>
+                                            <input
+                                                className={ styles.checkbox }
+                                                type='checkbox'
+                                                onChange={ () => selectedTask(id) }
+                                                checked={ selectedTaskIds.includes(id) }
+                                            />
+                                        </div>
+                                        <TaskTableCell id={ id }>{ title }</TaskTableCell>
+                                        <TaskTableCell id={ id }>{ description }</TaskTableCell>
+                                        <TaskTableCell id={ id }>{ formattedDate(startDatetime) }</TaskTableCell>
+                                        <TaskTableCell id={ id }>{ formattedDate(endDatetime) }</TaskTableCell>
+                                    </div>
+                                );
+                            }) }
+                        </div>
+                        { taskList.length > 0 ? null : <h2 className={ styles.message }>Задачи не найдены</h2> }
+                    </>
+                ) }
             </div>
-            { taskList.length ? '' : <h2 className={ styles.noTasksMessage }>Задачи не найдены</h2> }
             <AuthorLink>Created by: TopTTeDHbIu-DeJLbFuH4uk</AuthorLink>
         </>
     );

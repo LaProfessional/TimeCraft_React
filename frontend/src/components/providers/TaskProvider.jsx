@@ -4,6 +4,7 @@ import useValidation from "../../hooks/useValidation";
 
 import { SelectedTaskIdsContext } from "./SelectedTaskIdsProvider";
 import { ModalModeContext } from "./ModalModeProvider";
+import { LoadingStatusContext } from "./LoadingStatusProvider";
 
 import { url } from "../../constants";
 
@@ -26,13 +27,13 @@ const TaskProvider = ({ children }) => {
     const [ queryObject, setQueryObject ] = useState({});
     const [ tasksCount, setTasksCount ] = useState(0);
     const [ isDeleteAllTasks, setIsDeleteAllTasks ] = useState(false);
-
     let [ portionLength, setPortionLength ] = useState(0);
 
     const prevQueryObject = useRef(queryObject);
 
     const { selectedTaskIds, setSelectedTaskIds } = useContext(SelectedTaskIdsContext);
     const { modalMode } = useContext(ModalModeContext);
+    const { setIsLoading } = useContext(LoadingStatusContext);
 
     const token = localStorage.getItem("userToken");
 
@@ -88,7 +89,7 @@ const TaskProvider = ({ children }) => {
             setTaskList(prevTasks => (isSorting ? [ ...tasks ] : [ ...prevTasks, ...tasks ]));
 
             prevQueryObject.current = queryObject;
-        });
+        }).finally(() => setIsLoading(false));
     };
     useEffect(() => getTasks(), [ queryObject ]);
 

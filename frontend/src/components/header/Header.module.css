@@ -4,12 +4,14 @@
     align-items: center;
     gap: 10px;
 
-    transform: translateY(calc(-100% - 20px));
     animation: .5s ease-in-out slide-logo-on-top forwards;
 }
 
 @keyframes slide-logo-on-top {
-    100% {
+    from {
+        transform: translateY(calc(-100% - 20px));
+    }
+    to  {
         transform: translateY(0);
     }
 }

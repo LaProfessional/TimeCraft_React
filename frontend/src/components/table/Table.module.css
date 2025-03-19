@@ -27,9 +27,14 @@
     padding: 12px;
 }
 
+.message {
+    padding-top: 30px;
+    text-align: center;
+}
+
 .tableBodyContainer {
     overflow-y: auto;
-    max-height: 645px;
+    max-height: 660px;
     min-width: 1200px;
 
     border-bottom: 1px solid #f2f8f4;
@@ -100,9 +105,4 @@
     height: 16px;
     width: 16px;
     cursor: pointer;
-}
-
-.noTasksMessage {
-    text-align: center;
-    margin-bottom: 30px;
 }

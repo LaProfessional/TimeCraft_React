@@ -3,10 +3,10 @@ import React, { createContext, useState } from 'react';
 export const LoadingStatusContext = createContext();
 
 const LoadingStatusProvider = ({ children }) => {
-    const [ isMounted, setIsMounted ] = useState(false);
+    const [ isLoading, setIsLoading ] = useState(true);
 
     return (
-        <LoadingStatusContext.Provider value={ { isMounted, setIsMounted } }>
+        <LoadingStatusContext.Provider value={ { isLoading, setIsLoading } }>
             { children }
         </LoadingStatusContext.Provider>
     );
