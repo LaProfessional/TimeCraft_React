@@ -6,7 +6,7 @@ const useValidation = () => {
     const validate = (data, ignoredFields = []) => {
         let newErrors = {};
         for (const key in data) {
-            if (!data[key] && !ignoredFields.includes(key)) newErrors[key] = true;
+            if (!data[key].trim() && !ignoredFields.includes(key)) newErrors[key] = true;
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length

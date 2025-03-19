@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from "react";
 
 import Button from "./Button";
 import QuickSearch from "./QuickSearch";
-import TasksSortOptions from "./TasksSortOptions";
+import SortOptions from "./SortOptions";
 import ModalWindow from "../modalWindow/ModalWindow";
 import TaskCreationForm from "../modalWindow/TaskCreationForm";
 import TaskView from "../modalWindow/TaskView";
@@ -60,7 +60,7 @@ const Navigation = () => {
                     <QuickSearch placeholder="Поиск..." type="text"></QuickSearch>
 
                     <div className={ styles.sortOptionsContainer }>
-                        <TasksSortOptions></TasksSortOptions>
+                        <SortOptions></SortOptions>
                     </div>
                 </div>
                 <div className={ styles.rightNavContainer }>

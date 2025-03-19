@@ -22,10 +22,9 @@ router.post('/registration', async (req, response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const registrationQuery = `
-        INSERT INTO users
-            (username, password_hash)
+        INSERT INTO users (username, password_hash)
         VALUES ($1, $2) RETURNING id, username
-        ;`;
+    ;`;
 
     const res = await pool.query(registrationQuery, [ username, hashedPassword ]);
     const user = res.rows[0];
@@ -44,7 +43,7 @@ router.post('/login', async (req, response) => {
         SELECT *
         FROM users
         WHERE username = $1
-        ;`;
+    ;`;
 
     const user = await pool.query(loginQuery, [ username ]);
     if (user.rows.length === 0) return response.status(401).json({

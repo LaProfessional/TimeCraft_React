@@ -92,7 +92,6 @@ const TaskProvider = ({ children }) => {
     };
     useEffect(() => getTasks(), [ queryObject ]);
 
-
     const handleSaveTask = () => {
         const isInvalid = validate(taskData, [ "description" ]);
         if (isInvalid) return isInvalid;
@@ -176,7 +175,9 @@ const TaskProvider = ({ children }) => {
             startTime: defaultTime,
         }));
     };
-    useEffect(() => setDefaultStartDatetime(), []);
+    useEffect(() => {
+        setDefaultStartDatetime()
+    }, []);
 
     const populateTaskData = () => {
         const task = taskList.filter(task => task.id === selectedTaskIds[0]);
@@ -198,7 +199,9 @@ const TaskProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (modalMode.type === "edit") populateTaskData();
+        if (modalMode.type === "edit") {
+            populateTaskData();
+        }
     }, [ modalMode ]);
 
     const taskContextValue = useMemo(() => ({

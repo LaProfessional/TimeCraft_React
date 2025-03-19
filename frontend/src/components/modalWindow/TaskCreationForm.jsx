@@ -116,7 +116,7 @@ const TaskCreationForm = () => {
             </div>
 
             <div className={ styles.inputGroup }>
-                <label className={ styles.blockTitle } htmlFor="endDatetime">Дата окончания:</label>
+                <label className={ styles.blockTitle } htmlFor="endDate">Дата окончания:</label>
                 <div className={ styles.dateGroup }>
                     <input
                         className={ styles.inputDatetime }

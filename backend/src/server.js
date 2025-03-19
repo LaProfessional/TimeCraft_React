@@ -23,7 +23,7 @@ app.get('/tasks', async (req, response) => {
             SELECT COUNT(*)
             FROM tasks
             WHERE user_id = $1
-        ;`;
+        `;
         let queryParams = [ userId ];
 
         if (search) {

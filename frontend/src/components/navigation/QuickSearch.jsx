@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 
 import { TaskActionsContext } from "../providers/TaskProvider";
 
@@ -6,6 +6,7 @@ import styles from "./QuickSearch.module.css";
 
 const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }) => {
     const { setQueryObject } = useContext(TaskActionsContext);
+    const inputRef = useRef();
 
     let searchTimeoutId;
     const inputHandler = e => {
@@ -19,6 +20,10 @@ const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }
 
     const sortTasks = search => {
         clearTimeout(searchTimeoutId);
+
+        if (inputRef.current === search) return;
+        inputRef.current = search;
+
         setQueryObject({ search });
     };
 
@@ -27,13 +32,14 @@ const QuickSearch = React.memo(({ type = 'text', placeholder = 'Поиск...' }
             className={ styles.quickSearch }
             placeholder={ placeholder }
             type={ type }
+            ref={ inputRef }
             onInput={ inputHandler }
             onBlur={ e => {
                 if (!e.target.value) return;
-                sortTasks(e.target.value);
+                sortTasks(e.target.value.trim());
             } }
-            onKeyDown={ e => {
-                if (e.key === 'Enter') sortTasks(e.target.value);
+            onKeyUp={ e => {
+                if (e.key === 'Enter') sortTasks(e.target.value.trim());
             } }
         />
     );

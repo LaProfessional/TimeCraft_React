@@ -15,7 +15,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
         username: '',
         password: '',
     });
-    const [ loginError, setLoginError ] = useState({
+    const [ authError, setAuthError ] = useState({
         errorLogin: '',
         errorPassword: '',
     });
@@ -26,7 +26,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
     const { isModalOpen, setIsModalOpen, modalMode, setModalMode } = useContext(ModalModeContext);
     const { title, buttonText, errorMessageUser, type } = modalMode;
 
-    const login = () => {
+    const authenticateUser = () => {
         const isInvalidLogin = validate(userData);
         if (isInvalidLogin) return;
 
@@ -40,11 +40,11 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
         }).then(response => {
             return response.json();
 
-        }).then(login => {
-            if (login.errorLogin || login.errorPassword) {
-                setLoginError(() => ({ ...login }));
+        }).then(authResponse => {
+            if (authResponse.errorLogin || authResponse.errorPassword) {
+                setAuthError(() => ({ ...authResponse }));
             } else {
-                localStorage.setItem("userToken", login);
+                localStorage.setItem("userToken", authResponse);
                 setIsAuthenticated(true);
                 setIsModalOpen(false);
             }
@@ -56,7 +56,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
             username: '',
             password: '',
         });
-        setLoginError({
+        setAuthError({
             errorLogin: '',
             errorPassword: '',
         });
@@ -107,7 +107,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
                     <h2 className={ styles.title }>{ title }</h2>
                     <form
                         className={ styles.loginForm }
-                        onKeyUp={ e => e.key === 'Enter' ? login() : '' }
+                        onKeyUp={ e => e.key === 'Enter' ? authenticateUser() : '' }
                     >
                         <div className={ styles.inputContainer }>
                             <input
@@ -119,7 +119,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
                                 value={ userData.username }
                                 onChange={ handleChangeInput }
                             />
-                            <p className={ `${ styles.errorLogin } ${ loginError.errorLogin ? '' : styles.hidden }` }>{ errorMessageUser }</p>
+                            <p className={ `${ styles.errorLogin } ${ authError.errorLogin ? '' : styles.hidden }` }>{ errorMessageUser }</p>
                         </div>
 
                         <div className={ styles.inputContainer }>
@@ -132,12 +132,12 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
                                 value={ userData.password }
                                 onChange={ handleChangeInput }
                             />
-                            <p className={ `${ styles.errorPassword } ${ loginError.errorPassword ? '' : styles.hidden }` }>Неверный
+                            <p className={ `${ styles.errorPassword } ${ authError.errorPassword ? '' : styles.hidden }` }>Неверный
                                 пароль</p>
                         </div>
                     </form>
                     <div className={ styles.signInBtnContainer }>
-                        <Button type="login" onClick={ login }>{ buttonText }</Button>
+                        <Button type="login" onClick={ authenticateUser }>{ buttonText }</Button>
                     </div>
                 </div>
             </Overlay>

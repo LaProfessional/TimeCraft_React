@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 
 import { TaskActionsContext } from "../providers/TaskProvider";
 
-import styles from "./TasksSortOptions.module.css";
+import styles from "./SortOptions.module.css";
 
-const TasksSortOptions = React.memo(() => {
+const SortOptions = React.memo(() => {
     const { setQueryObject } = useContext(TaskActionsContext);
 
     const sortTasks = e => {
@@ -34,4 +34,4 @@ const TasksSortOptions = React.memo(() => {
     );
 });
 
-export default TasksSortOptions;
+export default SortOptions;
