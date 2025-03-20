@@ -1,15 +1,11 @@
 * {
+    box-sizing: border-box;
     font-family: "Noto Sans", sans-serif;
     color: #201e1e;
-    box-sizing: border-box;
 }
 
 body {
     background-color: #77b6ab;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
     padding: 20px;
     margin: 0;
 }
