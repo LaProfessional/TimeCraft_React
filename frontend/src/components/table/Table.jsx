@@ -116,7 +116,7 @@ const Table = () => {
                     </>
                 ) }
             </div>
-            <AuthorLink>Created by: TopTTeDHbIu-DeJLbFuH4uk</AuthorLink>
+            <AuthorLink>Created by: LaProfessional</AuthorLink>
         </>
     );
 };
