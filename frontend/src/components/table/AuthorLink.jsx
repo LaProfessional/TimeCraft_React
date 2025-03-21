@@ -7,7 +7,7 @@ const AuthorLink = React.memo(({ children }) => {
         <div className={ styles.authorWrapper }>
             <a
                 className={ styles.authorLink }
-                href="https://github.com/TopTTeDHbIu-DeJLbFuH4uk/TimeCraft_React"
+                href="https://github.com/LaProfessional/TimeCraft_React"
                 target={ "_blank" }
             >{ children }
             </a>
