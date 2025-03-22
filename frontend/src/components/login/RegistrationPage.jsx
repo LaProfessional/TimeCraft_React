@@ -88,9 +88,7 @@ const RegistrationPage = ({ setIsAuthenticated }) => {
 
     return (
         <>
-            { isLoading ? (
-                <h2>Загрузка...</h2>
-            ) : (
+            { !isLoading && (
                 <>
                     <div className={ styles.containerBtnLogin }>
                         <Button onClick={ () => {

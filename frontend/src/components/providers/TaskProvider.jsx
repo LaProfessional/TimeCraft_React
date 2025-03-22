@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import useValidation from "../../hooks/useValidation";
 
@@ -50,11 +50,24 @@ const TaskProvider = ({ children }) => {
                 setTaskList([]);
                 setTasksCount(0);
             } else {
-                setTaskList(prevTaskList =>
-                    prevTaskList.filter(task => !selectedTaskIds.includes(task.id))
-                );
+                setTaskList(prevTaskList => prevTaskList.filter(task => !selectedTaskIds.includes(task.id)));
+                getTasksCount();
             }
             setSelectedTaskIds([]);
+        });
+    };
+
+    const getTasksCount = () => {
+        fetch(`${ url }/tasks/count`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${ token }`,
+            },
+        }).then(response => {
+            return response.json();
+        }).then(count => {
+           setTasksCount(count.taskCount);
         });
     };
 
@@ -86,7 +99,12 @@ const TaskProvider = ({ children }) => {
 
             setTasksCount(tasksCount);
             setPortionLength(portionLength);
-            setTaskList(prevTasks => (isSorting ? [ ...tasks ] : [ ...prevTasks, ...tasks ]));
+
+            setTaskList(prevTasks => {
+                const mergedTasks = isSorting ? [ ...tasks ] : [ ...prevTasks, ...tasks ];
+
+                return mergedTasks.filter((task, index, self) => index === self.findIndex(t => t.id === task.id));
+            });
 
             prevQueryObject.current = queryObject;
         }).finally(() => setIsLoading(false));
@@ -125,9 +143,9 @@ const TaskProvider = ({ children }) => {
 
         }).then(response => {
             return response.json();
-
         }).then(task => {
             setTaskList(prev => [ ...prev, task ]);
+            getTasksCount();
             resetForm();
         });
     };

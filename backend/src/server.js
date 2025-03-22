@@ -5,7 +5,14 @@ import jwt from "jsonwebtoken";
 
 app.use('/auth', authRoutes);
 
-app.get('/tasks', async (req, response) => {
+app.get('/tasks/count', async (req, response) => {
+    const userId = getUserId(req);
+    const taskCount = await getTasksCount(userId);
+
+    response.status(200).json({ taskCount } )
+});
+
+app.get(`/tasks`, async (req, response) => {
     const {
         search,
         field,
@@ -14,26 +21,7 @@ app.get('/tasks', async (req, response) => {
     } = req.query;
     const limit = 20;
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, "secret");
-    const userId = decoded.userId;
-
-    const getTasksCount = async () => {
-        let countQuery = `
-            SELECT COUNT(*)
-            FROM tasks
-            WHERE user_id = $1
-        `;
-        let queryParams = [ userId ];
-
-        if (search) {
-            countQuery += ` AND (title ILIKE $2 OR description ILIKE $2)`;
-            queryParams.push(`%${ search }%`);
-        }
-
-        const countRes = await pool.query(countQuery, queryParams);
-        return countRes.rows[0].count;
-    };
+    const userId = getUserId(req);
 
     if (search) {
         const queryString = `
@@ -51,7 +39,7 @@ app.get('/tasks', async (req, response) => {
             OFFSET $4
         ;`;
 
-        const tasksCount = await getTasksCount();
+        const tasksCount = await getTasksCount(userId, search);
 
         const searchResults = await pool.query(queryString, [ userId, `%${ search }%`, limit, portionLength ]);
         const tasks = searchResults.rows;
@@ -76,7 +64,7 @@ app.get('/tasks', async (req, response) => {
             OFFSET $3
         ;`;
 
-        const tasksCount = await getTasksCount();
+        const tasksCount = await getTasksCount(userId);
 
         const sortedValues = await pool.query(querySort, [ userId, limit, portionLength ]);
         const tasks = sortedValues.rows;
@@ -99,7 +87,7 @@ app.get('/tasks', async (req, response) => {
         OFFSET $3
     ;`;
 
-    const tasksCount = await getTasksCount();
+    const tasksCount = await getTasksCount(userId);
 
     const getTasksRes = await pool.query(getTasks, [ userId, limit, portionLength ]);
     const tasks = getTasksRes.rows;
@@ -117,9 +105,7 @@ app.post('/tasks', async (req, response) => {
     } = req.body.task;
     const creationDatetime = new Date().toISOString();
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, "secret");
-    const userId = decoded.userId;
+    const userId = getUserId(req);
 
     const createTask = `
         INSERT INTO tasks (
@@ -145,7 +131,7 @@ app.post('/tasks', async (req, response) => {
         start_datetime,
         end_datetime,
         user_id
-    ;`;
+        ;`;
 
     const creationTaskRes = await pool.query(createTask, [
         creationDatetime,
@@ -171,9 +157,7 @@ app.put('/tasks', async (req, response) => {
         endDatetime,
     } = req.body.task;
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, "secret");
-    const userId = decoded.userId;
+    const userId = getUserId(req);
 
     const updateTask = `
         UPDATE tasks
@@ -182,8 +166,8 @@ app.put('/tasks', async (req, response) => {
             start_datetime = $3,
             end_datetime   = $4
         WHERE id = $5
-        AND user_id = $6 RETURNING *
-    ;`;
+          AND user_id = $6 RETURNING *
+        ;`;
 
     const updateTaskRes = await pool.query(updateTask, [
         title,
@@ -205,14 +189,12 @@ app.delete('/tasks', async (req, response) => {
     let query;
     let params;
 
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, "secret");
-    const userId = decoded.userId;
+    const userId = getUserId(req);
 
     if (isDeleteAllTasks) {
         query = `
-            DELETE             
-            FROM tasks              
+            DELETE
+            FROM tasks
             WHERE user_id = $1
         ;`;
         params = [ userId ];
@@ -238,4 +220,27 @@ const convertToCamelCase = dataObject => {
         transformedObject[camelCaseKey] = dataObject[originalKey];
     }
     return transformedObject;
+};
+
+const getTasksCount = async (userId, search) => {
+    let countQuery = `
+        SELECT COUNT(*)
+        FROM tasks
+        WHERE user_id = $1
+    `;
+    let queryParams = [ userId ];
+
+    if (search) {
+        countQuery += ` AND (title ILIKE $2 OR description ILIKE $2)`;
+        queryParams.push(`%${ search }%`);
+    }
+
+    const countRes = await pool.query(countQuery, queryParams);
+    return countRes.rows[0].count;
+};
+
+const getUserId = req => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, "secret");
+    return decoded.userId;
 };
