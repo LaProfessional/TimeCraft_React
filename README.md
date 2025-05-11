@@ -78,3 +78,11 @@ http://localhost:5173
 - Logic and UI structure
 - Scalability
 - Approaches to state management and routing
+
+## 💯+ Tasks
+
+Login and Password:
+
+```bash
+admin127
+```
