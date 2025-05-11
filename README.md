@@ -1,4 +1,4 @@
-http://timecraft-react.delfinnnn.online/
+[TimeCraft_React](http://timecraft-react.delfinnnn.online/)
 
 # ⏰ TimeCraft (React)
 
@@ -53,33 +53,28 @@ The `src/` directory includes:
 
 ```bash
 git clone https://github.com/LaProfessional/TimeCraft_React.git
-cd TimeCraft_React
 ```
-Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
-Run the development server:
+3. Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Open your browser and navigate to:
+4. Open your browser and navigate to:
 
-```arduino
+```bash
 http://localhost:5173
 ```
 ⚠️ Don’t forget to set up the backend server if you're using API and authentication!
 
 🔄 This comparison helps evaluate:
 
-Code reusability
-
-Logic and UI structure
-
-Scalability
-
-Approaches to state management and routing
-
+- Code reusability
+- Logic and UI structure
+- Scalability
+- Approaches to state management and routing
