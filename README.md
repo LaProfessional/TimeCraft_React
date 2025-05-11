@@ -38,10 +38,11 @@ The `src/` directory includes:
 **Technologies Used:**
 
 - React (v18+)  
-- React Router DOM  
+- React Router DOM
+- Express.js
+- PostgreSQL
 - bcrypt + JWT (backend integration)  
-- Vite (fast build tool, replacing CRA)  
-- Tailwind CSS (if enabled)  
+- CRA
 - ESLint + Prettier (for code quality and formatting)
 
 ---
@@ -53,34 +54,32 @@ The `src/` directory includes:
 ```bash
 git clone https://github.com/LaProfessional/TimeCraft_React.git
 cd TimeCraft_React
+```
 Install dependencies:
 
-bash
-Copy
-Edit
+```bash
 npm install
+```
 Run the development server:
 
-bash
-Copy
-Edit
+```bash
 npm run dev
+```
+
 Open your browser and navigate to:
 
-arduino
-Copy
-Edit
+```arduino
 http://localhost:5173
+```
 ⚠️ Don’t forget to set up the backend server if you're using API and authentication!
 
-🔄 Comparison with the JavaScript Version
-There is a vanilla JavaScript counterpart to this project: TimeCraft_JS.
-This comparison helps evaluate:
+🔄 This comparison helps evaluate:
 
 Code reusability
 
 Logic and UI structure
 
-Scalability and maintainability
+Scalability
 
 Approaches to state management and routing
+
