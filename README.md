@@ -25,18 +25,7 @@ This project is a React-based version of [TimeCraft_JS](https://github.com/LaPro
 
 ## 🧱 Project Architecture
 
-src/
-├── components/ # Reusable UI components
-├── pages/ # Pages (e.g., Planner, Login)
-├── hooks/ # Custom React hooks
-├── utils/ # Utility functions
-├── assets/ # Styles, icons, and other resources
-├── App.jsx # Main application component
-└── main.jsx # Application entry point
-
-yaml
-Copy
-Edit
+`src/` contains the main project structure: `components/` (reusable UI components), `pages/` (Planner, Login, etc.), `hooks/` (custom React hooks), `utils/` (helper functions), `assets/` (styles, icons, and other resources), `App.jsx` (main app component), and `main.jsx` (entry point).
 
 **Technologies Used:**
 
